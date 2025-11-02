@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>经典贪吃蛇游戏</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        #game-container {
+            width: 440px;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #333;
+            padding: 10px;
+        }
+        h1 {
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+        #game-info {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        #game-board {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            border: 2px solid #333;
+            background: #eee;
+            position: relative;
+        }
+        .snake-segment {
+            width: 18px;
+            height: 18px;
+            background: green;
+            position: absolute;
+            border: 1px solid darkgreen;
+        }
+        .food {
+            width: 18px;
+            height: 18px;
+            background: red;
+            position: absolute;
+            border: 1px solid darkred;
+        }
+        #game-over {
+            margin: 10px 0;
+            font-size: 24px;
+            color: red;
+            display: none;
+        }
+        button {
+            margin: 10px 5px;
+            padding: 5px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .instructions {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>经典贪吃蛇</h1>
+        <div id="game-info">
+            得分: <span id="score">0</span> | 长度: <span id="length">3</span>
+        </div>
+        <div id="game-board"></div>
+        <div id="game-over">游戏结束!</div>
+        <button onclick="startGame()">开始游戏</button>
+        <button onclick="resetGame()">重新开始</button>
+        <div class="instructions">
+            使用方向键(↑, ↓, ←, →)控制蛇的移动
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // 游戏配置
+        var gameConfig = {
+            boardSize: 20, // 20x20的网格
+            cellSize: 20,  // 每个网格20像素
+            speed: 150     // 游戏速度
+        };
+        
+        // 游戏状态
+        var gameState = {
+            snake: [],
+            direction: "right",
+            food: null,
+            score: 0,
+            length: 3,
+            gameOver: false,
+            gameStarted: false,
+            intervalId: null
+        };
+        
+        // 初始化游戏
+        function initGame() {
+            createBoard();
+            resetGame();
+            
+            // 添加键盘事件监听
+            document.onkeydown = function(e) {
+                var key = window.event ? e.keyCode : e.which;
+                handleKeyPress(key);
+            };
+        }
+        
+        // 创建游戏板
+        function createBoard() {
+            var board = document.getElementById("game-board");
+            board.innerHTML = "";
+            board.style.width = (gameConfig.boardSize * gameConfig.cellSize) + "px";
+            board.style.height = (gameConfig.boardSize * gameConfig.cellSize) + "px";
+        }
+        
+        // 开始游戏
+        function startGame() {
+            if (gameState.gameStarted) return;
+            
+            gameState.gameStarted = true;
+            document.getElementById("game-over").style.display = "none";
+            
+            // 开始游戏循环
+            gameState.intervalId = setInterval(gameLoop, gameConfig.speed);
+        }
+        
+        // 重置游戏
+        function resetGame() {
+            // 清除之前的游戏状态
+            if (gameState.intervalId) {
+                clearInterval(gameState.intervalId);
+            }
+            
+            // 重置游戏状态
+            gameState.snake = [];
+            gameState.direction = "right";
+            gameState.score = 0;
+            gameState.length = 3;
+            gameState.gameOver = false;
+            gameState.gameStarted = false;
+            
+            // 隐藏游戏结束消息
+            document.getElementById("game-over").style.display = "none";
+            
+            // 初始化蛇
+            var startX = 3;
+            var startY = Math.floor(gameConfig.boardSize / 2);
+            
+            for (var i = 0; i < gameState.length; i++) {
+                gameState.snake.push({x: startX + i, y: startY});
+            }
+            
+            // 生成食物
+            generateFood();
+            
+            // 更新显示
+            updateDisplay();
+            updateScore();
+        }
+        
+        // 游戏主循环
+        function gameLoop() {
+            if (gameState.gameOver) return;
+            
+            // 移动蛇
+            moveSnake();
+            
+            // 检查游戏结束条件
+            if (checkCollision()) {
+                endGame();
+                return;
+            }
+            
+            // 检查是否吃到食物
+            if (checkFood()) {
+                eatFood();
+            }
+            
+            // 更新显示
+            updateDisplay();
+        }
+        
+        // 移动蛇
+        function moveSnake() {
+            // 获取蛇头位置
+            var head = {x: gameState.snake[0].x, y: gameState.snake[0].y};
+            
+            // 根据方向移动蛇头
+            switch(gameState.direction) {
+                case "up": head.y--; break;
+                case "down": head.y++; break;
+                case "left": head.x--; break;
+                case "right": head.x++; break;
+            }
+            
+            // 添加新的蛇头
+            gameState.snake.unshift(head);
+            
+            // 如果蛇的长度超过了当前长度，移除蛇尾
+            if (gameState.snake.length > gameState.length) {
+                gameState.snake.pop();
+            }
+        }
+        
+        // 检查碰撞
+        function checkCollision() {
+            var head = gameState.snake[0];
+            
+            // 检查是否撞墙
+            if (head.x < 0 || head.x >= gameConfig.boardSize || 
+                head.y < 0 || head.y >= gameConfig.boardSize) {
+                return true;
+            }
+            
+            // 检查是否撞到自己
+            for (var i = 1; i < gameState.snake.length; i++) {
+                if (head.x === gameState.snake[i].x && head.y === gameState.snake[i].y) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        // 检查是否吃到食物
+        function checkFood() {
+            var head = gameState.snake[0];
+            return head.x === gameState.food.x && head.y === gameState.food.y;
+        }
+        
+        // 吃到食物
+        function eatFood() {
+            // 增加分数和长度
+            gameState.score += 10;
+            gameState.length++;
+            
+            // 更新分数显示
+            updateScore();
+            
+            // 生成新食物
+            generateFood();
+        }
+        
+        // 生成食物
+        function generateFood() {
+            var validPosition = false;
+            var foodX, foodY;
+            
+            // 循环直到找到有效位置
+            while (!validPosition) {
+                foodX = Math.floor(Math.random() * gameConfig.boardSize);
+                foodY = Math.floor(Math.random() * gameConfig.boardSize);
+                validPosition = true;
+                
+                // 检查食物是否与蛇重叠
+                for (var i = 0; i < gameState.snake.length; i++) {
+                    if (foodX === gameState.snake[i].x && foodY === gameState.snake[i].y) {
+                        validPosition = false;
+                        break;
+                    }
+                }
+            }
+            
+            gameState.food = {x: foodX, y: foodY};
+        }
+        
+        // 更新显示
+        function updateDisplay() {
+            var board = document.getElementById("game-board");
+            board.innerHTML = "";
+            
+            // 绘制蛇
+            for (var i = 0; i < gameState.snake.length; i++) {
+                var segment = document.createElement("div");
+                segment.className = "snake-segment";
+                segment.style.left = (gameState.snake[i].x * gameConfig.cellSize) + "px";
+                segment.style.top = (gameState.snake[i].y * gameConfig.cellSize) + "px";
+                board.appendChild(segment);
+            }
+            
+            // 绘制食物
+            if (gameState.food) {
+                var food = document.createElement("div");
+                food.className = "food";
+                food.style.left = (gameState.food.x * gameConfig.cellSize) + "px";
+                food.style.top = (gameState.food.y * gameConfig.cellSize) + "px";
+                board.appendChild(food);
+            }
+        }
+        
+        // 更新分数显示
+        function updateScore() {
+            document.getElementById("score").innerHTML = gameState.score;
+            document.getElementById("length").innerHTML = gameState.length;
+        }
+        
+        // 处理键盘输入
+        function handleKeyPress(key) {
+            if (!gameState.gameStarted) {
+                startGame();
+            }
+            
+            switch(key) {
+                case 37: // 左箭头
+                    if (gameState.direction !== "right") gameState.direction = "left";
+                    break;
+                case 38: // 上箭头
+                    if (gameState.direction !== "down") gameState.direction = "up";
+                    break;
+                case 39: // 右箭头
+                    if (gameState.direction !== "left") gameState.direction = "right";
+                    break;
+                case 40: // 下箭头
+                    if (gameState.direction !== "up") gameState.direction = "down";
+                    break;
+            }
+        }
+        
+        // 结束游戏
+        function endGame() {
+            gameState.gameOver = true;
+            gameState.gameStarted = false;
+            clearInterval(gameState.intervalId);
+            document.getElementById("game-over").style.display = "block";
+        }
+        
+        // 页面加载完成后初始化游戏
+        window.onload = initGame;
+    </script>
+</body>
+</html>
