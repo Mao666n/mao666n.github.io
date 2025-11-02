@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML导致浏览器崩溃的演示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .demo-section {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button.danger {
+            background-color: #f44336;
+        }
+        .code {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>HTML导致浏览器崩溃的演示</h1>
+    
+    <div class="warning">
+        <strong>警告：</strong> 此页面包含可能导致浏览器变慢、无响应甚至崩溃的代码示例。
+        请谨慎操作，并确保您已保存所有工作。
+    </div>
+    
+    <div class="demo-section">
+        <h2>1. 无限循环的JavaScript</h2>
+        <p>这段代码会创建一个无限循环，迅速消耗CPU资源。</p>
+        <div class="code">
+            while(true) { /* 无限循环 */ }
+        </div>
+        <button class="danger" onclick="startInfiniteLoop()">运行无限循环</button>
+        <button onclick="stopInfiniteLoop()">停止循环</button>
+    </div>
+    
+    <div class="demo-section">
+        <h2>2. 内存泄漏</h2>
+        <p>通过不断创建对象而不释放，消耗浏览器内存。</p>
+        <div class="code">
+            let data = [];<br>
+            function addData() {<br>
+            &nbsp;&nbsp;data.push(new Array(1000000).join('x'));<br>
+            }
+        </div>
+        <button class="danger" onclick="startMemoryLeak()">开始内存泄漏</button>
+        <button onclick="stopMemoryLeak()">停止并清理</button>
+        <p>已分配内存: <span id="memory-usage">0</span> MB</p>
+    </div>
+    
+    <div class="demo-section">
+        <h2>3. 大量DOM元素</h2>
+        <p>创建大量DOM元素可能导致浏览器变慢。</p>
+        <div class="code">
+            for(let i = 0; i < 100000; i++) {<br>
+            &nbsp;&nbsp;document.body.appendChild(document.createElement('div'));<br>
+            }
+        </div>
+        <button class="danger" onclick="createManyElements()">创建大量DOM元素</button>
+        <p>已创建元素数量: <span id="element-count">0</span></p>
+    </div>
+    
+    <div class="demo-section">
+        <h2>4. 递归函数导致栈溢出</h2>
+        <p>深度递归可能导致调用栈溢出。</p>
+        <div class="code">
+            function recursive() {<br>
+            &nbsp;&nbsp;recursive();<br>
+            }
+        </div>
+        <button class="danger" onclick="startStackOverflow()">触发栈溢出</button>
+    </div>
+    
+    <div class="demo-section">
+        <h2>5. 同步阻塞操作</h2>
+        <p>执行长时间运行的同步操作会阻塞浏览器。</p>
+        <div class="code">
+            let start = Date.now();<br>
+            while(Date.now() - start < 10000) { /* 阻塞10秒 */ }
+        </div>
+        <button class="danger" onclick="blockBrowser()">阻塞浏览器10秒</button>
+    </div>
+    
+    <div class="demo-section">
+        <h2>如何防止浏览器崩溃</h2>
+        <ul>
+            <li>避免无限循环和深度递归</li>
+            <li>使用Web Workers处理CPU密集型任务</li>
+            <li>合理管理内存，及时释放不需要的对象</li>
+            <li>使用分页或虚拟滚动处理大量数据</li>
+            <li>避免长时间运行的同步操作</li>
+        </ul>
+    </div>
+
+    <script>
+        // 无限循环控制
+        let infiniteLoopRunning = false;
+        function startInfiniteLoop() {
+            infiniteLoopRunning = true;
+            setTimeout(() => {
+                while(infiniteLoopRunning) {
+                    // 无限循环
+                }
+            }, 100);
+        }
+        
+        function stopInfiniteLoop() {
+            infiniteLoopRunning = false;
+        }
+        
+        // 内存泄漏控制
+        let memoryLeakData = [];
+        let memoryLeakInterval;
+        function startMemoryLeak() {
+            memoryLeakInterval = setInterval(() => {
+                // 每次添加约1MB数据
+                memoryLeakData.push(new Array(1000000).join('x'));
+                updateMemoryUsage();
+            }, 100);
+        }
+        
+        function stopMemoryLeak() {
+            clearInterval(memoryLeakInterval);
+            memoryLeakData = [];
+            updateMemoryUsage();
+        }
+        
+        function updateMemoryUsage() {
+            document.getElementById('memory-usage').textContent = 
+                Math.round(memoryLeakData.length);
+        }
+        
+        // 大量DOM元素
+        function createManyElements() {
+            const container = document.createElement('div');
+            container.style.display = 'none'; // 隐藏以避免渲染性能问题
+            
+            for(let i = 0; i < 10000; i++) {
+                container.appendChild(document.createElement('div'));
+            }
+            
+            document.body.appendChild(container);
+            document.getElementById('element-count').textContent = 
+                parseInt(document.getElementById('element-count').textContent) + 10000;
+        }
+        
+        // 栈溢出
+        function startStackOverflow() {
+            function recursive() {
+                recursive();
+            }
+            
+            try {
+                recursive();
+            } catch(e) {
+                alert('栈溢出错误: ' + e.message);
+            }
+        }
+        
+        // 阻塞浏览器
+        function blockBrowser() {
+            const start = Date.now();
+            while(Date.now() - start < 10000) {
+                // 阻塞10秒
+            }
+            alert('阻塞结束');
+        }
+    </script>
+</body>
+</html>
