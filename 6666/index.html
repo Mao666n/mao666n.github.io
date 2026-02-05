@@ -15,6 +15,768 @@
         :root {
             --bg-primary: linear-gradient(135deg, #ff6b9d 0%, #c779d0 50%, #4bc0c8 100%);
             --bg-night: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-bg-night: rgba(30, 41, 59, 0.95);
+            --text-color: #333;
+            --text-color-night: #e2e8f0;
+            --accent-color: #e63946;
+            --accent-night: #f87171;
+            --link-bg: rgba(255, 255, 255, 0.7);
+            --link-bg-night: rgba(30, 41, 59, 0.7);
+            --music-bg: rgba(255, 255, 255, 0.85);
+            --music-bg-night: rgba(30, 41, 59, 0.85);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            transition: background 0.5s, color 0.3s;
+        }
+
+        body.night-mode {
+            background: var(--bg-night);
+            color: var(--text-color-night);
+        }
+
+        /* 下雪容器 - 性能优化 */
+        #snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .snowflake {
+            position: absolute;
+            color: white;
+            user-select: none;
+            z-index: 1;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s ease, opacity 0.5s ease;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .night-mode .control-panel {
+            background: rgba(30, 41, 59, 0.95);
+        }
+
+        .control-btn {
+            background: var(--accent-color);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            color: white;
+            min-width: 140px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .control-btn.active {
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .control-btn#snowToggle {
+            background: #e63946;
+        }
+
+        .control-btn#nightToggle {
+            background: #4361ee;
+        }
+
+        .control-btn#musicToggle {
+            background: #4cc9f0;
+        }
+
+        .night-mode .control-btn {
+            background: #3a0ca3;
+        }
+
+        .night-mode .control-btn#snowToggle {
+            background: #f72585;
+        }
+
+        .night-mode .control-btn#musicToggle {
+            background: #7209b7;
+        }
+
+        /* 音乐播放器 */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: var(--music-bg);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .night-mode .music-player {
+            background: var(--music-bg-night);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .music-player.hidden {
+            transform: translateY(150%);
+            opacity: 0;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .player-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: var(--accent-color);
+        }
+
+        .night-mode .player-title {
+            color: var(--accent-night);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(0,0,0,0.1);
+            color: var(--accent-color);
+        }
+
+        .night-mode .close-btn {
+            color: #94a3b8;
+        }
+
+        .night-mode .close-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-night);
+        }
+
+        .song-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .album-art {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-right: 12px;
+            object-fit: cover;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .song-details {
+            flex: 1;
+        }
+
+        .song-title {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 4px;
+            color: var(--text-color);
+        }
+
+        .night-mode .song-title {
+            color: var(--text-color-night);
+        }
+
+        .song-artist {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .night-mode .song-artist {
+            color: #94a3b8;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .control-icon {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--accent-color);
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .control-icon:hover {
+            background: rgba(230, 57, 70, 0.1);
+            transform: scale(1.1);
+        }
+
+        .night-mode .control-icon {
+            color: var(--accent-night);
+        }
+
+        .night-mode .control-icon:hover {
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .play-btn {
+            background: var(--accent-color);
+            color: white;
+            font-size: 28px;
+            width: 50px;
+            height: 50px;
+        }
+
+        .play-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.1);
+        }
+
+        .night-mode .play-btn {
+            background: var(--accent-night);
+        }
+
+        .night-mode .play-btn:hover {
+            background: #e11d48;
+        }
+
+        .progress-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .night-mode .progress-bar {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        .night-mode .progress {
+            background: var(--accent-night);
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .night-mode .time-display {
+            color: #94a3b8;
+        }
+
+        .playlist {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 10px;
+        }
+
+        .night-mode .playlist {
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 5px;
+        }
+
+        .playlist-item:hover {
+            background: rgba(230, 57, 70, 0.1);
+        }
+
+        .night-mode .playlist-item:hover {
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .playlist-item.active {
+            background: rgba(230, 57, 70, 0.2);
+        }
+
+        .night-mode .playlist-item.active {
+            background: rgba(248, 113, 113, 0.2);
+        }
+
+        .playlist-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .playlist-info {
+            flex: 1;
+        }
+
+        .playlist-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .playlist-artist {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .night-mode .playlist-artist {
+            color: #94a3b8;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .volume-icon {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .night-mode .volume-icon {
+            color: #94a3b8;
+        }
+
+        .volume-slider {
+            flex: 1;
+            height: 4px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .night-mode .volume-slider {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .volume-slider .progress {
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 2px;
+            width: 70%;
+        }
+
+        .night-mode .volume-slider .progress {
+            background: var(--accent-night);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: background 0.3s;
+        }
+
+        .night-mode header {
+            background: var(--card-bg-night);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #e63946 0%, #4361ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .night-mode h1 {
+            background: linear-gradient(135deg, #f72585 0%, #4cc9f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .version {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .night-mode .version {
+            background: var(--accent-night);
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: background 0.3s;
+        }
+
+        .night-mode .card {
+            background: var(--card-bg-night);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .night-mode .card-title {
+            color: var(--accent-night);
+            border-color: var(--accent-night);
+        }
+
+        .links {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .link {
+            display: block;
+            background: var(--link-bg);
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .night-mode .link {
+            background: var(--link-bg-night);
+            color: var(--text-color-night);
+        }
+
+        .link:hover {
+            background: var(--card-bg);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--accent-color);
+        }
+
+        .night-mode .link:hover {
+            background: var(--card-bg-night);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-color: var(--accent-night);
+        }
+
+        .link-title {
+            font-weight: bold;
+            color: var(--accent-color);
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .night-mode .link-title {
+            color: var(--accent-night);
+        }
+
+        .link-note {
+            font-size: 13px;
+            color: #666;
+            display: block;
+            line-height: 1.4;
+        }
+
+        .night-mode .link-note {
+            color: #94a3b8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 20px;
+            color: white;
+            font-size: 14px;
+            margin-top: 30px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+        }
+
+        .night-mode footer {
+            color: #cbd5e1;
+            background: rgba(0,0,0,0.4);
+        }
+
+        a {
+            color: var(--accent-color);
+            transition: color 0.3s;
+        }
+
+        .night-mode a {
+            color: var(--accent-night);
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .links {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .control-panel {
+                top: 15px;
+                right: 15px;
+                padding: 10px;
+            }
+            
+            .control-btn {
+                padding: 8px 15px;
+                font-size: 13px;
+                min-width: 120px;
+            }
+            
+            header {
+                padding: 30px 15px;
+            }
+            
+            .music-player {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .control-panel {
+                top: 10px;
+                right: 10px;
+                padding: 8px;
+            }
+            
+            .control-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+                min-width: 100px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 下雪容器 -->
+<div id="snow-container"></div>
+
+<!-- 控制面板 -->
+<div class="control-panel">
+    <button id="snowToggle" class="control-btn active">❄️ 关闭下雪</button>
+    <button id="musicToggle" class="control-btn">🎵 音乐播放器</button>
+    <button id="nightToggle" class="control-btn">🌙 夜间模式</button>
+</div>
+
+<!-- 音乐播放器 -->
+<div id="musicPlayer" class="music-player hidden">
+    <div class="player-header">
+        <div class="player-title">🎵 正在播放</div>
+        <button id="closePlayer" class="close-btn">×</button>
+    </div>
+    
+    <div class="song-info">
+        <img id="albumArt" src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="专辑封面" class="album-art">
+        <div class="song-details">
+            <div id="songTitle" class="song-title">加载中...</div>
+            <div id="songArtist" class="song-artist">请稍候</div>
+        </div>
+    </div>
+    
+    <div class="player-controls">
+        <button id="prevBtn" class="control-icon">⏮</button>
+        <button id="playBtn" class="control-icon play-btn">▶️</button>
+        <button id="nextBtn" class="control-icon">⏭</button>
+    </div>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="time-display">
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
+        </div>
+    </div>
+    
+    <div class="volume-control">
+        <span class="volume-icon">🔊</span>
+        <div class="volume-slider" id="volumeSlider">
+            <div class="progress" id="volumeProgress"></div>
+        </div>
+    </div>
+    
+    <div class="playlist" id="playlist">
+        <!-- 播放列表将通过JavaScript动态生成 -->
+    </div>
+</div>
+
+<div class="container">
+    <header>
+        <h1>MaoIPA软件站</h1>
+        <div class="version">v3.0 音乐增强版</div>
+        <p style="margin-top: 15px; color: #666; font-size: 14px;">❄️ 新增音乐播放器，可在GitHub仓库中运行</p>
+    </header>
+
+    <div class="card">
+        <div class="card-title">温馨提示</div>
+        <p>本站提供苹果设备下载安装与服务。如需帮助，请在B站联系站长。</p>
+        <p>返回旧站：<a href="http://maoipa.mysxl.cn">maoipa.mysxl.cn</a></p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">自创网盘专区</div>
+        <div class="links">
+            <a href="https://mao666n.github.io/" class="link" target="_blank">
+                <span class="link-title">Mao自创网盘</span>
+                <span class="link-note">资源丰富，持续更新</span>
+                <small style="color:#666;font-size:12px;">密码：666</small>
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Cydia源推荐</div>
+        <div class="links">
+            <a href="http://apt.gs" class="link" target="_blank">
+                <span class="link-title">沟石源</span>
+                <span class="link-note">稳定可靠的Cydia源</span>
+            </a>
+            <a href="http://apt.senpai114514.icu/" class="link" target="_blank">
+                <span class="link-title">臭源</span>
+                <span class="link-note">特色插件资源</span>
+            </a>
+            <a href="http://apt.abcydia.com/" class="link" target="_blank">
+                <span class="link-title">雷锋源</span>
+                <span class="link-note">免费优质插件</span>
+            </a>
+            <a href="http://cydia.skyglow.es/" class="link" target="_blank"<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaoIPA软件站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --bg-primary: linear-gradient(135deg, #ff6b9d 0%, #c779d0 50%, #4bc0c8 100%);
+            --bg-night: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
             --card-bg: rgba(255, 255, 255, 0.9);
             --card-bg-night: rgba(30, 41, 59, 0.9);
             --text-color: #333;
