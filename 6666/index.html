@@ -41,7 +41,7 @@
             color: var(--text-color-night);
         }
 
-        /* 下雪容器 */
+        /* 下雪容器 - 始终开启 */
         #snow {
             position: fixed;
             top: 0;
@@ -49,8 +49,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s;
+            opacity: 1; /* 始终显示 */
             z-index: 1;
         }
 
@@ -61,50 +60,50 @@
             opacity: 0.8;
             user-select: none;
             z-index: 1;
-            /* 添加旋转过渡效果 */
             transition: transform 0.3s ease-out;
         }
 
-        /* 控制按钮 */
-        .controls {
+        /* 统一控制面板 - 右上角 */
+        .control-panel {
             position: fixed;
             top: 20px;
             right: 20px;
             display: flex;
-            flex-direction: column;
             gap: 10px;
             z-index: 100;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: background 0.3s;
+        }
+
+        .night-mode .control-panel {
+            background: rgba(30, 41, 59, 0.9);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
         .control-btn {
-            background: rgba(255, 255, 255, 0.9);
+            background: none;
             border: none;
             border-radius: 20px;
-            padding: 10px 20px;
+            padding: 8px 16px;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.3s;
             color: #333;
         }
 
         .night-mode .control-btn {
-            background: rgba(30, 41, 59, 0.9);
             color: #e2e8f0;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
 
         .control-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        }
-
-        .night-mode .control-btn:hover {
-            box-shadow: 0 6px 15px rgba(0,0,0,0.6);
         }
 
         .control-btn.active {
@@ -282,43 +281,48 @@
                 font-size: 1.8rem;
             }
             
-            .controls {
-                top: 10px;
-                right: 10px;
+            .control-panel {
+                top: 15px;
+                right: 15px;
+                flex-direction: column;
+                padding: 8px;
             }
             
             .control-btn {
-                padding: 8px 15px;
+                padding: 6px 12px;
                 font-size: 13px;
             }
         }
 
         @media (max-width: 480px) {
-            .controls {
-                flex-direction: row;
-                bottom: 10px;
-                top: auto;
-                right: 50%;
-                transform: translateX(50%);
+            .control-panel {
+                top: 10px;
+                right: 10px;
+                padding: 5px;
+            }
+            
+            .control-btn {
+                padding: 5px 10px;
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
 
-<!-- 下雪容器 -->
+<!-- 下雪容器 - 始终显示 -->
 <div id="snow"></div>
 
-<!-- 控制按钮 -->
-<div class="controls">
+<!-- 统一控制面板 -->
+<div class="control-panel">
     <button id="nightBtn" class="control-btn">🌙 夜间模式</button>
-    <button id="snowBtn" class="control-btn">❄️ 开启下雪</button>
 </div>
 
 <div class="container">
     <header>
         <h1>MaoIPA软件站</h1>
-        <div class="version">v3.0 多功能版</div>
+        <div class="version">v3.0 雪花飘落版</div>
+        <p style="margin-top: 10px; color: #666; font-size: 14px;">❄️ 雪花效果已默认开启</p>
     </header>
 
     <div class="card">
@@ -383,36 +387,56 @@
                 <span class="link-title">蓝奏云</span>
                 <span class="link-note">高速文件分享</span>
             </a>
+            <a href="https://3g.gs/index.html" class="link" target="_blank">
+                <span class="link-title">iOSIPA聊天</span>
+                <span class="link-note">iOS用户交流社区</span>
+            </a>
+            <a href="https://kill.mhfs.eu.org/" class="link" target="_blank">
+                <span class="link-title">i4应用搜索</span>
+                <span class="link-note">应用搜索工具</span>
+            </a>
+            <a href="https://kill.mhfs.eu.org/iosipa" class="link" target="_blank">
+                <span class="link-title">iBot</span>
+                <span class="link-note">iOS助手工具</span>
+            </a>
+            <a href="https://cloud.iosipa.org/" class="link" target="_blank">
+                <span class="link-title">互传中心</span>
+                <span class="link-note">文件互传平台</span>
+            </a>
         </div>
     </div>
 
     <footer>
         <p>© 2026 MaoIPA软件站 版权所有 | 本网站仅供学习交流使用</p>
+        <p style="margin-top: 8px; font-size: 12px; opacity: 0.8;">使用快捷键 Ctrl+N 切换夜间模式</p>
     </footer>
 </div>
 
 <script>
-    // 下雪效果
+    // 下雪效果 - 始终开启
     const snow = document.getElementById('snow');
-    const snowBtn = document.getElementById('snowBtn');
     const nightBtn = document.getElementById('nightBtn');
-    let snowing = false;
     let snowflakes = [];
     let nightMode = false;
+    
+    // 自动启动下雪动画
+    let snowAnimationId = null;
 
-    // 创建雪花 - 添加旋转属性
+    // 创建雪花
     function createSnow() {
         snow.innerHTML = '';
         snowflakes = [];
         
-        const count = Math.min(60, Math.floor(window.innerWidth * window.innerHeight / 12000));
+        const count = Math.min(50, Math.floor(window.innerWidth * window.innerHeight / 15000));
         
         for (let i = 0; i < count; i++) {
             const flake = document.createElement('div');
             flake.className = 'snowflake';
-            flake.innerHTML = '❄';
+            // 使用不同的雪花字符
+            const snowChars = ['❄', '❅', '❆', '✻', '✼'];
+            flake.innerHTML = snowChars[Math.floor(Math.random() * snowChars.length)];
             flake.style.left = Math.random() * 100 + '%';
-            flake.style.fontSize = (Math.random() * 10 + 15) + 'px';
+            flake.style.fontSize = (Math.random() * 8 + 12) + 'px';
             flake.style.opacity = Math.random() * 0.7 + 0.3;
             
             snow.appendChild(flake);
@@ -424,57 +448,53 @@
                 y: Math.random() * -100,
                 speed: Math.random() * 2 + 1,
                 sway: Math.random() * 2 - 1,
-                rotation: Math.random() * 360, // 初始旋转角度
-                rotationSpeed: Math.random() * 3 + 1, // 旋转速度
-                rotateDirection: Math.random() > 0.5 ? 1 : -1 // 旋转方向
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 2 + 0.5,
+                rotateDirection: Math.random() > 0.5 ? 1 : -1
             });
         }
     }
 
-    // 动画雪花 - 添加旋转动画
+    // 动画雪花
     function animateSnow() {
         const height = window.innerHeight;
+        const width = window.innerWidth;
         
         snowflakes.forEach(flake => {
             // 更新位置
             flake.y += flake.speed;
-            flake.x += Math.sin(flake.y * 0.01) * flake.sway;
+            flake.x += Math.sin(flake.y * 0.008 + Date.now() * 0.001) * flake.sway * 0.5;
             
             // 更新旋转角度
             flake.rotation += flake.rotationSpeed * flake.rotateDirection;
             
+            // 边界检查
             if (flake.y > height) {
                 flake.y = -20;
                 flake.x = Math.random() * 100;
-                flake.rotation = Math.random() * 360;
             }
+            if (flake.x < -5) flake.x = -5;
+            if (flake.x > 105) flake.x = 105;
             
             // 应用位置和旋转
             flake.el.style.left = flake.x + '%';
             flake.el.style.top = flake.y + 'px';
             flake.el.style.transform = `rotate(${flake.rotation}deg)`;
+            
+            // 根据高度调整透明度（底部渐隐）
+            const fadeHeight = height * 0.8;
+            if (flake.y > fadeHeight) {
+                flake.el.style.opacity = 0.3 * (1 - (flake.y - fadeHeight) / (height - fadeHeight));
+            }
         });
         
-        if (snowing) {
-            requestAnimationFrame(animateSnow);
-        }
+        snowAnimationId = requestAnimationFrame(animateSnow);
     }
 
-    // 切换下雪
-    function toggleSnow() {
-        snowing = !snowing;
-        
-        if (snowing) {
-            snow.style.opacity = '1';
-            snowBtn.innerHTML = '❄️ 关闭下雪';
-            snowBtn.classList.add('active');
-            createSnow();
-            animateSnow();
-        } else {
-            snow.style.opacity = '0';
-            snowBtn.innerHTML = '❄️ 开启下雪';
-            snowBtn.classList.remove('active');
-        }
+    // 开始下雪动画
+    function startSnow() {
+        createSnow();
+        snowAnimationId = requestAnimationFrame(animateSnow);
     }
 
     // 切换夜间模式
@@ -495,24 +515,20 @@
     }
 
     // 初始化
-    snowBtn.addEventListener('click', toggleSnow);
-    nightBtn.addEventListener('click', toggleNightMode);
-    
-    // 从本地存储加载设置
-    const savedNightMode = localStorage.getItem('nightMode');
-    if (savedNightMode === 'true') {
-        toggleNightMode(); // 应用夜间模式
-    }
-    
-    // 窗口大小变化时重新创建雪花
-    window.addEventListener('resize', () => {
-        if (snowing) {
-            createSnow();
-        }
-    });
-
-    // 页面加载动画
     document.addEventListener('DOMContentLoaded', () => {
+        // 启动下雪动画
+        startSnow();
+        
+        // 初始化夜间模式
+        nightBtn.addEventListener('click', toggleNightMode);
+        
+        // 从本地存储加载设置
+        const savedNightMode = localStorage.getItem('nightMode');
+        if (savedNightMode === 'true') {
+            toggleNightMode(); // 应用夜间模式
+        }
+        
+        // 页面加载动画
         const cards = document.querySelectorAll('.card');
         cards.forEach((card, i) => {
             card.style.opacity = '0';
@@ -523,19 +539,33 @@
                 card.style.transform = 'translateY(0)';
             }, i * 100);
         });
+        
+        // 窗口大小变化时重新创建雪花
+        window.addEventListener('resize', () => {
+            createSnow();
+        });
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+N 切换夜间模式
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                toggleNightMode();
+            }
+        });
     });
 
-    // 添加键盘快捷键
-    document.addEventListener('keydown', (e) => {
-        // Ctrl+S 切换下雪
-        if (e.ctrlKey && e.key === 's') {
-            e.preventDefault();
-            toggleSnow();
-        }
-        // Ctrl+N 切换夜间模式
-        if (e.ctrlKey && e.key === 'n') {
-            e.preventDefault();
-            toggleNightMode();
+    // 页面隐藏时暂停动画，显示时恢复
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            if (snowAnimationId) {
+                cancelAnimationFrame(snowAnimationId);
+                snowAnimationId = null;
+            }
+        } else {
+            if (!snowAnimationId) {
+                snowAnimationId = requestAnimationFrame(animateSnow);
+            }
         }
     });
 </script>
