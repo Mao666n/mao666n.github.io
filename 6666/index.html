@@ -57,11 +57,11 @@
         .snowflake {
             position: absolute;
             color: white;
-            font-size: 20px;
-            opacity: 0.8;
             user-select: none;
             z-index: 1;
             transition: transform 0.3s ease-out;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
         }
 
         /* 统一控制面板 - 右上角 */
@@ -105,6 +105,11 @@
 
         .control-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .night-mode .control-btn:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         .control-btn.active {
@@ -323,8 +328,8 @@
 <div class="container">
     <header>
         <h1>MaoIPA软件站</h1>
-        <div class="version">v3.0 雪花控制版</div>
-        <p style="margin-top: 10px; color: #666; font-size: 14px;">❄️ 雪花效果已默认开启，可点击右上角关闭</p>
+        <div class="version">v3.0 大雪花版</div>
+        <p style="margin-top: 10px; color: #666; font-size: 14px;">❄️ 大雪花效果已默认开启，可点击右上角关闭</p>
     </header>
 
     <div class="card">
@@ -428,35 +433,59 @@
     // 保存下雪状态到本地存储
     let snowAnimationId = null;
 
-    // 创建雪花
+    // 创建大雪花
     function createSnow() {
         snow.innerHTML = '';
         snowflakes = [];
         
-        const count = Math.min(50, Math.floor(window.innerWidth * window.innerHeight / 15000));
+        // 减少雪花数量，因为雪花变大了
+        const count = Math.min(30, Math.floor(window.innerWidth * window.innerHeight / 20000));
         
         for (let i = 0; i < count; i++) {
             const flake = document.createElement('div');
             flake.className = 'snowflake';
-            // 使用不同的雪花字符
+            
+            // 使用更大的雪花字符和组合
             const snowChars = ['❄', '❅', '❆', '✻', '✼'];
-            flake.innerHTML = snowChars[Math.floor(Math.random() * snowChars.length)];
+            const snowChar = snowChars[Math.floor(Math.random() * snowChars.length)];
+            
+            // 随机选择大雪花样式
+            const snowType = Math.random();
+            let snowHtml, baseSize;
+            
+            if (snowType < 0.3) {
+                // 特大雪花 - 使用多个字符组合
+                snowHtml = snowChar + snowChar;
+                baseSize = Math.random() * 35 + 30; // 30-65px
+            } else if (snowType < 0.6) {
+                // 大雪花 - 单字符但放大
+                snowHtml = snowChar;
+                baseSize = Math.random() * 25 + 25; // 25-50px
+            } else {
+                // 中等雪花
+                snowHtml = snowChar;
+                baseSize = Math.random() * 20 + 20; // 20-40px
+            }
+            
+            flake.innerHTML = snowHtml;
             flake.style.left = Math.random() * 100 + '%';
-            flake.style.fontSize = (Math.random() * 8 + 12) + 'px';
-            flake.style.opacity = Math.random() * 0.7 + 0.3;
+            flake.style.fontSize = baseSize + 'px';
+            flake.style.opacity = Math.random() * 0.8 + 0.2;
             
             snow.appendChild(flake);
             
-            // 为每个雪花添加旋转属性
+            // 为每个雪花添加旋转属性 - 大雪花飘得慢一些
             snowflakes.push({
                 el: flake,
                 x: parseFloat(flake.style.left),
                 y: Math.random() * -100,
-                speed: Math.random() * 2 + 1,
+                speed: Math.random() * 1.5 + 0.5, // 更慢的速度
                 sway: Math.random() * 2 - 1,
                 rotation: Math.random() * 360,
-                rotationSpeed: Math.random() * 2 + 0.5,
-                rotateDirection: Math.random() > 0.5 ? 1 : -1
+                rotationSpeed: Math.random() * 1.5 + 0.5, // 更慢的旋转
+                rotateDirection: Math.random() > 0.5 ? 1 : -1,
+                size: baseSize,
+                swayIntensity: Math.random() * 0.8 + 0.2
             });
         }
     }
@@ -467,30 +496,35 @@
         const width = window.innerWidth;
         
         snowflakes.forEach(flake => {
-            // 更新位置
+            // 更新位置 - 大雪花飘得更优雅
             flake.y += flake.speed;
-            flake.x += Math.sin(flake.y * 0.008 + Date.now() * 0.001) * flake.sway * 0.5;
+            flake.x += Math.sin(flake.y * 0.005 + Date.now() * 0.0005) * flake.sway * flake.swayIntensity;
             
-            // 更新旋转角度
+            // 更新旋转角度 - 大雪花旋转更明显
             flake.rotation += flake.rotationSpeed * flake.rotateDirection;
             
             // 边界检查
             if (flake.y > height) {
-                flake.y = -20;
+                flake.y = -50;
                 flake.x = Math.random() * 100;
+                flake.rotation = Math.random() * 360;
             }
-            if (flake.x < -5) flake.x = -5;
-            if (flake.x > 105) flake.x = 105;
+            if (flake.x < -10) flake.x = -10;
+            if (flake.x > 110) flake.x = 110;
+            
+            // 根据大小调整飘落效果
+            const swayFactor = flake.size > 40 ? 0.3 : 0.6;
+            const speedFactor = flake.size > 40 ? 0.7 : 1;
             
             // 应用位置和旋转
             flake.el.style.left = flake.x + '%';
             flake.el.style.top = flake.y + 'px';
-            flake.el.style.transform = `rotate(${flake.rotation}deg)`;
+            flake.el.style.transform = `rotate(${flake.rotation}deg) scale(${speedFactor})`;
             
             // 根据高度调整透明度（底部渐隐）
-            const fadeHeight = height * 0.8;
+            const fadeHeight = height * 0.7;
             if (flake.y > fadeHeight) {
-                flake.el.style.opacity = 0.3 * (1 - (flake.y - fadeHeight) / (height - fadeHeight));
+                flake.el.style.opacity = 0.4 * (1 - (flake.y - fadeHeight) / (height - fadeHeight));
             }
         });
         
@@ -607,6 +641,18 @@
                 toggleNightMode();
             }
         });
+        
+        // 添加点击效果：点击雪花时该雪花消失
+        snow.addEventListener('click', (e) => {
+            if (e.target.classList.contains('snowflake')) {
+                e.target.style.transition = 'all 0.5s ease';
+                e.target.style.opacity = '0';
+                e.target.style.transform = 'scale(0) rotate(360deg)';
+                setTimeout(() => {
+                    e.target.remove();
+                }, 500);
+            }
+        });
     });
 
     // 页面隐藏时暂停动画，显示时恢复
@@ -617,12 +663,4 @@
                 snowAnimationId = null;
             }
         } else {
-            if (!snowAnimationId && snowing) {
-                snowAnimationId = requestAnimationFrame(animateSnow);
-            }
-        }
-    });
-</script>
-
-</body>
-</html>
+            if (!s
