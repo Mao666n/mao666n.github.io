@@ -41,17 +41,17 @@
             color: var(--text-color-night);
         }
 
-        /* 下雪容器 */
-        #snow {
+        /* 下雪容器 - 确保显示 */
+        #snow-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            opacity: 1; /* 默认开启 */
             z-index: 1;
-            transition: opacity 0.5s ease;
+            opacity: 1;
+            overflow: hidden;
         }
 
         .snowflake {
@@ -59,66 +59,70 @@
             color: white;
             user-select: none;
             z-index: 1;
-            transition: transform 0.3s ease-out;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
             filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+            font-size: 30px; /* 默认大雪花 */
         }
 
-        /* 统一控制面板 - 右上角 */
+        /* 控制面板 */
         .control-panel {
             position: fixed;
             top: 20px;
             right: 20px;
             display: flex;
+            flex-direction: column;
             gap: 10px;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 25px;
-            padding: 5px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: background 0.3s;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
 
         .night-mode .control-panel {
-            background: rgba(30, 41, 59, 0.9);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            background: rgba(30, 41, 59, 0.95);
         }
 
         .control-btn {
-            background: none;
+            background: var(--accent-color);
             border: none;
             border-radius: 20px;
-            padding: 8px 16px;
+            padding: 10px 20px;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            gap: 8px;
             transition: all 0.3s;
-            color: #333;
-        }
-
-        .night-mode .control-btn {
-            color: #e2e8f0;
+            color: white;
+            width: 140px;
         }
 
         .control-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .night-mode .control-btn:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        .control-btn#snowToggle {
+            background: #e63946;
+        }
+
+        .control-btn#nightToggle {
+            background: #4361ee;
         }
 
         .control-btn.active {
-            background: var(--accent-color);
-            color: white;
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
         }
 
-        .night-mode .control-btn.active {
-            background: var(--accent-night);
+        .night-mode .control-btn {
+            background: #3a0ca3;
+        }
+
+        .night-mode .control-btn#snowToggle {
+            background: #f72585;
         }
 
         /* 主容器 */
@@ -131,38 +135,45 @@
 
         header {
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 20px;
             background: var(--card-bg);
             border-radius: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             transition: background 0.3s;
         }
 
         .night-mode header {
             background: var(--card-bg-night);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
 
         h1 {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             color: var(--accent-color);
-            margin-bottom: 10px;
-            transition: color 0.3s;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #e63946 0%, #4361ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .night-mode h1 {
-            color: var(--accent-night);
+            background: linear-gradient(135deg, #f72585 0%, #4cc9f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .version {
             display: inline-block;
             background: var(--accent-color);
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            transition: background 0.3s;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 0;
         }
 
         .night-mode .version {
@@ -173,24 +184,23 @@
         .card {
             background: var(--card-bg);
             border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             transition: background 0.3s;
         }
 
         .night-mode .card {
             background: var(--card-bg-night);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
 
         .card-title {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             color: var(--accent-color);
-            margin-bottom: 15px;
-            padding-left: 10px;
-            border-left: 4px solid var(--accent-color);
-            transition: color 0.3s, border-color 0.3s;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 5px solid var(--accent-color);
         }
 
         .night-mode .card-title {
@@ -200,18 +210,19 @@
 
         .links {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
         }
 
         .link {
             display: block;
             background: var(--link-bg);
-            padding: 12px;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 12px;
             text-decoration: none;
             color: var(--text-color);
             transition: all 0.3s;
+            border: 2px solid transparent;
         }
 
         .night-mode .link {
@@ -221,20 +232,23 @@
 
         .link:hover {
             background: var(--card-bg);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: var(--accent-color);
         }
 
         .night-mode .link:hover {
             background: var(--card-bg-night);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            border-color: var(--accent-night);
         }
 
         .link-title {
             font-weight: bold;
             color: var(--accent-color);
             display: block;
-            transition: color 0.3s;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
         }
 
         .night-mode .link-title {
@@ -242,11 +256,10 @@
         }
 
         .link-note {
-            font-size: 13px;
+            font-size: 14px;
             color: #666;
             display: block;
-            margin-top: 3px;
-            transition: color 0.3s;
+            line-height: 1.4;
         }
 
         .night-mode .link-note {
@@ -255,14 +268,17 @@
 
         footer {
             text-align: center;
-            padding: 20px;
+            padding: 30px 20px;
             color: white;
-            font-size: 14px;
-            margin-top: 20px;
+            font-size: 15px;
+            margin-top: 30px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
         }
 
         .night-mode footer {
             color: #cbd5e1;
+            background: rgba(0,0,0,0.4);
         }
 
         a {
@@ -284,19 +300,23 @@
             }
             
             h1 {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
             
             .control-panel {
                 top: 15px;
                 right: 15px;
-                flex-direction: column;
                 padding: 8px;
             }
             
             .control-btn {
-                padding: 6px 12px;
+                padding: 8px 15px;
                 font-size: 13px;
+                width: 120px;
+            }
+            
+            header {
+                padding: 30px 15px;
             }
         }
 
@@ -308,28 +328,33 @@
             }
             
             .control-btn {
-                padding: 5px 10px;
+                padding: 6px 12px;
                 font-size: 12px;
+                width: 110px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
             }
         }
     </style>
 </head>
 <body>
 
-<!-- 下雪容器 - 默认开启 -->
-<div id="snow"></div>
+<!-- 下雪容器 -->
+<div id="snow-container"></div>
 
-<!-- 统一控制面板 -->
+<!-- 控制面板 -->
 <div class="control-panel">
-    <button id="snowBtn" class="control-btn active">❄️ 关闭下雪</button>
-    <button id="nightBtn" class="control-btn">🌙 夜间模式</button>
+    <button id="snowToggle" class="control-btn active">❄️ 关闭下雪</button>
+    <button id="nightToggle" class="control-btn">🌙 夜间模式</button>
 </div>
 
 <div class="container">
     <header>
         <h1>MaoIPA软件站</h1>
-        <div class="version">v3.0 持续下雪版</div>
-        <p style="margin-top: 10px; color: #666; font-size: 14px;">❄️ 持续下雪效果已默认开启，可点击右上角关闭</p>
+        <div class="version">v3.0 稳定下雪版</div>
+        <p style="margin-top: 15px; color: #666; font-size: 16px;">❄️ 雪花效果已默认开启，可点击右上角控制</p>
     </header>
 
     <div class="card">
@@ -344,7 +369,7 @@
             <a href="https://mao666n.github.io/" class="link" target="_blank">
                 <span class="link-title">Mao自创网盘</span>
                 <span class="link-note">资源丰富，持续更新</span>
-                <small style="color:#666;font-size:12px;">密码：666</small>
+                <small style="color:#666;font-size:13px;">密码：666</small>
             </a>
         </div>
     </div>
@@ -415,198 +440,141 @@
 
     <footer>
         <p>© 2026 MaoIPA软件站 版权所有 | 本网站仅供学习交流使用</p>
-        <p style="margin-top: 8px; font-size: 12px; opacity: 0.8;">
-            使用快捷键：Ctrl+S 切换下雪 | Ctrl+N 切换夜间模式
+        <p style="margin-top: 10px; font-size: 13px; opacity: 0.9;">
+            快捷键：Ctrl+S 切换下雪 | Ctrl+N 切换夜间模式
         </p>
     </footer>
 </div>
 
 <script>
-    // 下雪效果 - 默认开启
-    const snow = document.getElementById('snow');
-    const snowBtn = document.getElementById('snowBtn');
-    const nightBtn = document.getElementById('nightBtn');
-    let snowflakes = [];
-    let nightMode = false;
-    let snowing = true; // 默认开启
-    let snowAnimationId = null;
+    // 简化版下雪效果 - 确保能正常工作
+    console.log("初始化下雪效果...");
     
-    // 雪花池 - 复用雪花对象，避免频繁创建销毁
-    let snowflakePool = [];
-    const MAX_FLAKES = 80; // 最大雪花数量
-    let activeFlakes = 0;
-
-    // 创建初始雪花池
-    function createSnowflakePool() {
-        for (let i = 0; i < MAX_FLAKES; i++) {
-            const flake = document.createElement('div');
-            flake.className = 'snowflake';
-            flake.style.display = 'none';
-            snow.appendChild(flake);
-            
-            snowflakePool.push({
-                el: flake,
-                active: false,
-                x: 0,
-                y: 0,
-                speed: 0,
-                sway: 0,
-                rotation: 0,
-                rotationSpeed: 0,
-                rotateDirection: 1,
-                size: 0,
-                swayIntensity: 0
-            });
-        }
-    }
-
-    // 激活一个雪花
-    function activateSnowflake() {
-        if (activeFlakes >= MAX_FLAKES || !snowing) return;
+    const snowContainer = document.getElementById('snow-container');
+    const snowToggle = document.getElementById('snowToggle');
+    const nightToggle = document.getElementById('nightToggle');
+    
+    let snowflakes = [];
+    let snowing = true;
+    let nightMode = false;
+    let animationId = null;
+    
+    // 下雪效果核心函数
+    function createSnowflake() {
+        const flake = document.createElement('div');
+        flake.className = 'snowflake';
         
-        const inactiveFlakes = snowflakePool.filter(f => !f.active);
-        if (inactiveFlakes.length === 0) return;
-        
-        const flake = inactiveFlakes[0];
-        flake.active = true;
-        activeFlakes++;
-        
-        // 使用更大的雪花字符
+        // 雪花字符
         const snowChars = ['❄', '❅', '❆', '✻', '✼'];
-        const snowChar = snowChars[Math.floor(Math.random() * snowChars.length)];
+        const char = snowChars[Math.floor(Math.random() * snowChars.length)];
         
-        // 随机选择大雪花样式
-        const snowType = Math.random();
-        let snowHtml, baseSize;
+        // 随机大小 (20-60px)
+        const size = Math.random() * 40 + 20;
         
-        if (snowType < 0.3) {
-            // 特大雪花
-            snowHtml = snowChar + snowChar;
-            baseSize = Math.random() * 35 + 30; // 30-65px
-        } else if (snowType < 0.6) {
-            // 大雪花
-            snowHtml = snowChar;
-            baseSize = Math.random() * 25 + 25; // 25-50px
-        } else {
-            // 中等雪花
-            snowHtml = snowChar;
-            baseSize = Math.random() * 20 + 20; // 20-40px
+        flake.innerHTML = char;
+        flake.style.fontSize = `${size}px`;
+        flake.style.left = `${Math.random() * 100}%`;
+        flake.style.top = `-50px`;
+        flake.style.opacity = Math.random() * 0.8 + 0.2;
+        
+        snowContainer.appendChild(flake);
+        
+        return {
+            element: flake,
+            x: parseFloat(flake.style.left),
+            y: -50,
+            speed: Math.random() * 2 + 1,
+            sway: Math.random() * 0.5 - 0.25,
+            rotation: 0,
+            rotationSpeed: Math.random() * 3 + 1,
+            size: size
+        };
+    }
+    
+    // 创建初始雪花
+    function createInitialSnow() {
+        snowflakes = [];
+        const count = Math.min(50, Math.floor(window.innerWidth / 20));
+        
+        for (let i = 0; i < count; i++) {
+            snowflakes.push(createSnowflake());
         }
         
-        flake.el.innerHTML = snowHtml;
-        flake.el.style.display = 'block';
-        flake.el.style.left = Math.random() * 100 + '%';
-        flake.el.style.fontSize = baseSize + 'px';
-        flake.el.style.opacity = Math.random() * 0.8 + 0.2;
-        flake.el.style.transform = 'rotate(0deg) scale(1)';
-        
-        // 初始化属性
-        flake.x = parseFloat(flake.el.style.left);
-        flake.y = Math.random() * -100 - 50; // 从更上方开始
-        flake.speed = Math.random() * 1.5 + 0.5;
-        flake.sway = Math.random() * 2 - 1;
-        flake.rotation = Math.random() * 360;
-        flake.rotationSpeed = Math.random() * 1.5 + 0.5;
-        flake.rotateDirection = Math.random() > 0.5 ? 1 : -1;
-        flake.size = baseSize;
-        flake.swayIntensity = Math.random() * 0.8 + 0.2;
+        console.log(`创建了 ${count} 个雪花`);
     }
-
-    // 动画雪花 - 修复版：雪花飘出屏幕后重置
+    
+    // 动画循环
     function animateSnow() {
         const height = window.innerHeight;
-        const width = window.innerWidth;
         
-        // 定期激活新雪花
-        if (Math.random() < 0.3 && activeFlakes < MAX_FLAKES) {
-            activateSnowflake();
-        }
-        
-        // 更新所有活跃雪花
-        snowflakePool.forEach(flake => {
-            if (!flake.active) return;
-            
+        snowflakes.forEach(flake => {
             // 更新位置
             flake.y += flake.speed;
-            flake.x += Math.sin(flake.y * 0.005 + Date.now() * 0.0005) * flake.sway * flake.swayIntensity;
-            
-            // 更新旋转角度
-            flake.rotation += flake.rotationSpeed * flake.rotateDirection;
-            
-            // 如果雪花飘出屏幕，重置它
-            if (flake.y > height + 100) {
-                // 重置到顶部
-                flake.y = Math.random() * -100 - 50;
-                flake.x = Math.random() * 100;
-                flake.rotation = Math.random() * 360;
-                flake.el.style.opacity = Math.random() * 0.8 + 0.2;
-            }
+            flake.x += Math.sin(flake.y * 0.01) * flake.sway;
+            flake.rotation += flake.rotationSpeed;
             
             // 边界检查
-            if (flake.x < -10) flake.x = -10;
-            if (flake.x > 110) flake.x = 110;
+            if (flake.y > height + 100) {
+                // 重置到顶部
+                flake.y = -50;
+                flake.x = Math.random() * 100;
+                flake.rotation = Math.random() * 360;
+                flake.element.style.opacity = Math.random() * 0.8 + 0.2;
+            }
             
-            // 应用位置和旋转
-            flake.el.style.left = flake.x + '%';
-            flake.el.style.top = flake.y + 'px';
-            flake.el.style.transform = `rotate(${flake.rotation}deg)`;
+            // 应用变换
+            flake.element.style.left = `${flake.x}%`;
+            flake.element.style.top = `${flake.y}px`;
+            flake.element.style.transform = `rotate(${flake.rotation}deg)`;
             
-            // 根据高度调整透明度（底部渐隐）
-            const fadeHeight = height * 0.7;
-            if (flake.y > fadeHeight) {
-                flake.el.style.opacity = 0.4 * (1 - (flake.y - fadeHeight) / (height - fadeHeight));
+            // 底部渐隐
+            const fadeStart = height * 0.8;
+            if (flake.y > fadeStart) {
+                const opacity = 0.3 * (1 - (flake.y - fadeStart) / (height - fadeStart));
+                flake.element.style.opacity = Math.max(opacity, 0);
             }
         });
+        
+        // 偶尔添加新雪花
+        if (Math.random() < 0.1 && snowflakes.length < 100) {
+            snowflakes.push(createSnowflake());
+        }
         
         if (snowing) {
-            snowAnimationId = requestAnimationFrame(animateSnow);
+            animationId = requestAnimationFrame(animateSnow);
         }
     }
-
-    // 开始下雪动画
+    
+    // 开始下雪
     function startSnow() {
+        console.log("开始下雪");
         snowing = true;
-        snow.style.opacity = '1';
-        snowBtn.innerHTML = '❄️ 关闭下雪';
-        snowBtn.classList.add('active');
+        snowToggle.textContent = '❄️ 关闭下雪';
+        snowToggle.classList.add('active');
+        snowContainer.style.display = 'block';
         
-        // 激活初始雪花
-        for (let i = 0; i < 20; i++) {
-            activateSnowflake();
+        if (!animationId) {
+            animateSnow();
         }
         
-        snowAnimationId = requestAnimationFrame(animateSnow);
-        
-        // 保存设置到本地存储
         localStorage.setItem('snowing', 'true');
     }
-
-    // 停止下雪动画
+    
+    // 停止下雪
     function stopSnow() {
+        console.log("停止下雪");
         snowing = false;
-        snow.style.opacity = '0';
-        snowBtn.innerHTML = '❄️ 开启下雪';
-        snowBtn.classList.remove('active');
+        snowToggle.textContent = '❄️ 开启下雪';
+        snowToggle.classList.remove('active');
         
-        // 停止动画
-        if (snowAnimationId) {
-            cancelAnimationFrame(snowAnimationId);
-            snowAnimationId = null;
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
         }
         
-        // 隐藏所有雪花
-        snowflakePool.forEach(flake => {
-            if (flake.active) {
-                flake.active = false;
-                flake.el.style.display = 'none';
-            }
-        });
-        activeFlakes = 0;
-        
-        // 保存设置到本地存储
         localStorage.setItem('snowing', 'false');
     }
-
+    
     // 切换下雪
     function toggleSnow() {
         if (snowing) {
@@ -615,62 +583,97 @@
             startSnow();
         }
     }
-
+    
     // 切换夜间模式
     function toggleNightMode() {
         nightMode = !nightMode;
         document.body.classList.toggle('night-mode');
         
         if (nightMode) {
-            nightBtn.innerHTML = '☀️ 日间模式';
-            nightBtn.classList.add('active');
+            nightToggle.textContent = '☀️ 日间模式';
+            nightToggle.classList.add('active');
         } else {
-            nightBtn.innerHTML = '🌙 夜间模式';
-            nightBtn.classList.remove('active');
+            nightToggle.textContent = '🌙 夜间模式';
+            nightToggle.classList.remove('active');
         }
         
-        // 保存设置到本地存储
         localStorage.setItem('nightMode', nightMode);
     }
-
+    
     // 初始化
-    document.addEventListener('DOMContentLoaded', () => {
-        // 创建雪花池
-        createSnowflakePool();
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOM加载完成，开始初始化...");
         
-        // 初始化下雪状态
+        // 检查本地存储
         const savedSnowing = localStorage.getItem('snowing');
+        const savedNightMode = localStorage.getItem('nightMode');
+        
+        // 初始化下雪
         if (savedSnowing === 'false') {
-            stopSnow(); // 如果用户之前关闭了，就不开启
+            stopSnow();
         } else {
-            startSnow(); // 默认开启
+            createInitialSnow();
+            startSnow();
         }
         
         // 初始化夜间模式
-        nightBtn.addEventListener('click', toggleNightMode);
-        snowBtn.addEventListener('click', toggleSnow);
-        
-        // 从本地存储加载设置
-        const savedNightMode = localStorage.getItem('nightMode');
         if (savedNightMode === 'true') {
-            toggleNightMode(); // 应用夜间模式
+            toggleNightMode(); // 这会自动应用夜间模式
         }
+        
+        // 绑定按钮事件
+        snowToggle.addEventListener('click', toggleSnow);
+        nightToggle.addEventListener('click', toggleNightMode);
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) {
+                if (e.key === 's') {
+                    e.preventDefault();
+                    toggleSnow();
+                } else if (e.key === 'n') {
+                    e.preventDefault();
+                    toggleNightMode();
+                }
+            }
+        });
+        
+        // 窗口大小变化时调整
+        window.addEventListener('resize', () => {
+            // 重置雪花位置
+            snowflakes.forEach(flake => {
+                flake.x = Math.random() * 100;
+                flake.element.style.left = `${flake.x}%`;
+            });
+        });
         
         // 页面加载动画
         const cards = document.querySelectorAll('.card');
-        cards.forEach((card, i) => {
+        cards.forEach((card, index) => {
             card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
+            card.style.transform = 'translateY(30px)';
             setTimeout(() => {
-                card.style.transition = 'all 0.5s ease';
+                card.style.transition = 'all 0.6s ease';
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
-            }, i * 100);
+            }, index * 200);
         });
         
-        // 窗口大小变化时重置雪花位置
-        window.addEventListener('resize', () => {
-            if (snowing) {
-                // 重置所有雪花位置
-                snowflakePool.forEach(flake => {
-                
+        console.log("初始化完成，当前下雪状态:", snowing);
+    });
+    
+    // 页面可见性变化
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        } else if (snowing && !animationId) {
+            animationId = requestAnimationFrame(animateSnow);
+        }
+    });
+</script>
+
+</body>
+</html>
