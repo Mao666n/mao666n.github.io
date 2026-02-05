@@ -5,35 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MaoIPA软件站</title>
     <style>
-        :root {
-            --primary: #e63946;
-            --primary-light: #f28482;
-            --secondary: #9d4edd;
-            --accent: #f72585;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --shadow: rgba(0, 0, 0, 0.08);
-            --shadow-hover: rgba(0, 0, 0, 0.12);
-            --gradient: linear-gradient(135deg, #ff4d6d 0%, #9d4edd 100%);
-            --radius: 16px;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
 
         body {
-            background-color: #ffeff1;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 77, 109, 0.15) 0%, transparent 25%),
-                radial-gradient(circle at 90% 80%, rgba(157, 78, 221, 0.15) 0%, transparent 25%);
-            color: var(--dark);
+            background: linear-gradient(135deg, #ff6b9d 0%, #c779d0 50%, #4bc0c8 100%);
+            color: #333;
             line-height: 1.6;
             min-height: 100vh;
             padding: 20px;
@@ -41,624 +22,346 @@
             overflow-x: hidden;
         }
 
-        /* 红粉渐变背景层 */
-        .gradient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255, 77, 109, 0.2) 0%, rgba(157, 78, 221, 0.2) 100%);
-            z-index: -2;
-            pointer-events: none;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* 下雪控制按钮 - 修复版 */
-        .snow-control {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .snow-toggle {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 10px 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 1001;
-            pointer-events: auto;
-        }
-
-        .snow-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-        }
-
-        .snow-toggle:active {
-            transform: translateY(0);
-        }
-
-        .snow-icon {
-            font-size: 1.1rem;
-        }
-
-        /* 下雪效果容器 */
-        #snow-container {
+        /* 下雪容器 */
+        #snow {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 0;
             opacity: 0;
-            transition: opacity 0.8s ease;
+            transition: opacity 0.5s;
+            z-index: 1;
         }
 
         .snowflake {
             position: absolute;
-            top: -20px;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1em;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+            color: white;
+            font-size: 20px;
+            opacity: 0.8;
             user-select: none;
-            z-index: 0;
-            pointer-events: none;
+            z-index: 1;
         }
 
-        /* Header Styles */
+        /* 控制按钮 */
+        .snow-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .snow-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
         header {
             text-align: center;
-            padding: 30px 20px 20px;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-        }
-
-        .subtitle {
-            font-size: 1rem;
-            color: var(--gray);
-            max-width: 600px;
-            margin: 0 auto 10px;
-            line-height: 1.6;
-        }
-
-        .version-tag {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 4px 12px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.85);
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-
-        /* Card Styles */
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 24px;
             margin-bottom: 20px;
-            box-shadow: 0 6px 20px var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px var(--shadow-hover);
+        h1 {
+            font-size: 2.2rem;
+            color: #e63946;
+            margin-bottom: 10px;
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--gradient);
+        .version {
+            display: inline-block;
+            background: #f72585;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* 卡片 */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .card-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--dark);
+            font-size: 1.2rem;
+            color: #e63946;
             margin-bottom: 15px;
-            padding-left: 8px;
-            border-left: 3px solid var(--primary);
+            padding-left: 10px;
+            border-left: 4px solid #e63946;
         }
 
-        .card-description {
-            color: var(--gray);
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            padding-left: 11px;
-        }
-
-        /* Link Grid */
-        .link-grid {
+        .links {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
         }
 
-        .link-item {
+        .link {
             display: block;
-            background: rgba(248, 249, 250, 0.9);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 12px;
             border-radius: 10px;
-            padding: 15px;
             text-decoration: none;
-            color: var(--dark);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            transition: all 0.2s ease;
-            position: relative;
-            z-index: 1;
+            color: #333;
+            transition: all 0.3s;
         }
 
-        .link-item:hover {
+        .link:hover {
             background: white;
-            border-color: var(--primary-light);
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
         }
 
         .link-title {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 5px;
+            font-weight: bold;
+            color: #e63946;
             display: block;
-            font-size: 1rem;
         }
 
         .link-note {
-            font-size: 0.85rem;
-            color: var(--gray);
+            font-size: 13px;
+            color: #666;
             display: block;
-            line-height: 1.4;
+            margin-top: 3px;
         }
 
-        /* Alert Styles */
-        .alert {
-            background: rgba(230, 57, 70, 0.1);
-            border-left: 4px solid var(--primary);
-            padding: 18px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            backdrop-filter: blur(5px);
-            z-index: 1;
-            position: relative;
-        }
-
-        .alert-title {
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--dark);
-            font-size: 1rem;
-        }
-
-        .alert-text {
-            font-size: 0.92rem;
-            color: var(--gray);
-        }
-
-        .alert-text a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .alert-text a:hover {
-            text-decoration: underline;
-        }
-
-        /* Footer */
         footer {
             text-align: center;
-            padding: 30px 20px 25px;
-            margin-top: 30px;
-            color: var(--gray);
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(108, 117, 125, 0.2);
-            position: relative;
-            z-index: 1;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+            margin-top: 20px;
         }
 
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .footer-link {
-            color: var(--primary);
-            text-decoration: none;
-            transition: color 0.2s;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .footer-link:hover {
-            color: var(--accent);
-        }
-
-        .copyright {
-            margin-top: 10px;
-            opacity: 0.9;
-        }
-
-        /* Password Tag */
-        .password-tag {
-            display: inline-block;
-            background: rgba(242, 242, 247, 0.9);
-            color: var(--gray);
-            font-size: 0.8rem;
-            padding: 4px 10px;
-            border-radius: 6px;
-            margin-top: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.2rem;
-            }
-            
-            .card {
-                padding: 20px;
-                margin-bottom: 18px;
-            }
-            
-            .link-grid {
+            .links {
                 grid-template-columns: 1fr;
-                gap: 10px;
             }
             
-            .footer-links {
-                flex-direction: column;
-                gap: 12px;
-            }
-            
-            body {
-                padding: 15px;
-            }
-            
-            .snow-control {
-                top: 15px;
-                right: 15px;
-            }
-            
-            .snow-toggle {
-                padding: 8px 16px;
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header h1 {
+            h1 {
                 font-size: 1.8rem;
             }
             
-            .card-title {
-                font-size: 1.2rem;
-            }
-            
-            .snow-control {
+            .snow-btn {
                 top: 10px;
                 right: 10px;
-            }
-            
-            .snow-toggle {
-                padding: 6px 12px;
-                font-size: 0.8rem;
+                padding: 8px 15px;
+                font-size: 13px;
             }
         }
     </style>
 </head>
 <body>
 
-<!-- 红粉渐变背景层 -->
-<div class="gradient-bg"></div>
+<!-- 下雪容器 -->
+<div id="snow"></div>
 
-<!-- 下雪效果容器 -->
-<div id="snow-container"></div>
-
-<!-- 下雪控制按钮 -->
-<div class="snow-control">
-    <button id="snowToggle" class="snow-toggle">
-        <span class="snow-icon">❄️</span>
-        <span id="snowText">开启下雪</span>
-    </button>
-</div>
+<!-- 下雪开关 -->
+<button id="snowBtn" class="snow-btn">❄️ 开启下雪</button>
 
 <div class="container">
     <header>
         <h1>MaoIPA软件站</h1>
-        <div class="version-tag">v3.0 红粉版</div>
+        <div class="version">v3.0 红粉版</div>
     </header>
 
-    <div class="alert">
-        <div class="alert-title">温馨提示</div>
-        <div class="alert-text">本站提供苹果设备下载安装与服务。如需帮助，请在B站联系站长。返回旧站：<a href="http://maoipa.mysxl.cn">maoipa.mysxl.cn</a></div>
+    <div class="card">
+        <div class="card-title">温馨提示</div>
+        <p>本站提供苹果设备下载安装与服务。如需帮助，请在B站联系站长。</p>
+        <p>返回旧站：<a href="http://maoipa.mysxl.cn" style="color:#e63946;">maoipa.mysxl.cn</a></p>
     </div>
 
-    <section class="card">
+    <div class="card">
         <div class="card-title">自创网盘专区</div>
-        <p class="card-description">本站自创网盘，持续更新，资源均来自网络搜集，欢迎投稿优质资源。</p>
-        <div class="link-grid">
-            <a href="https://mao666n.github.io/" class="link-item" target="_blank">
+        <div class="links">
+            <a href="https://mao666n.github.io/" class="link" target="_blank">
                 <span class="link-title">Mao自创网盘</span>
                 <span class="link-note">资源丰富，持续更新</span>
-                <span class="password-tag">密码：666</span>
+                <small style="color:#666;font-size:12px;">密码：666</small>
             </a>
         </div>
-    </section>
+    </div>
 
-    <section class="card">
-        <div class="card-title">软件站推广</div>
-        <p class="card-description">优质软件站点推荐，发现更多实用工具和资源。</p>
-        <div class="link-grid">
-            <div class="link-item" style="opacity: 0.7; cursor: default;">
-                <span class="link-title">期待更多推荐</span>
-                <span class="link-note">优质站点持续收集中</span>
-            </div>
-        </div>
-    </section>
-
-    <section class="card">
+    <div class="card">
         <div class="card-title">Cydia源推荐</div>
-        <p class="card-description">精选优质Cydia源，为越狱设备提供丰富插件和工具。</p>
-        <div class="link-grid">
-            <a href="http://apt.gs" class="link-item" target="_blank">
+        <div class="links">
+            <a href="http://apt.gs" class="link" target="_blank">
                 <span class="link-title">沟石源</span>
                 <span class="link-note">稳定可靠的Cydia源</span>
             </a>
-            <a href="http://apt.senpai114514.icu/" class="link-item" target="_blank">
+            <a href="http://apt.senpai114514.icu/" class="link" target="_blank">
                 <span class="link-title">臭源</span>
                 <span class="link-note">特色插件资源</span>
             </a>
-            <a href="http://apt.abcydia.com/" class="link-item" target="_blank">
+            <a href="http://apt.abcydia.com/" class="link" target="_blank">
                 <span class="link-title">雷锋源</span>
                 <span class="link-note">免费优质插件</span>
             </a>
-            <a href="http://cydia.skyglow.es/" class="link-item" target="_blank">
+            <a href="http://cydia.skyglow.es/" class="link" target="_blank">
                 <span class="link-title">SkyGlow源</span>
                 <span class="link-note">美化主题插件</span>
             </a>
         </div>
-    </section>
+    </div>
 
-    <section class="card">
+    <div class="card">
         <div class="card-title">实用网站推荐</div>
-        <p class="card-description">精选实用网站，涵盖天气、娱乐、论坛、工具等多种类型。</p>
-        <div class="link-grid">
-            <a href="https://tianqi.com/" class="link-item" target="_blank">
+        <div class="links">
+            <a href="https://tianqi.com/" class="link" target="_blank">
                 <span class="link-title">天气查询</span>
                 <span class="link-note">实时天气信息</span>
             </a>
-            <a href="https://diantaiwang.com/" class="link-item" target="_blank">
+            <a href="https://diantaiwang.com/" class="link" target="_blank">
                 <span class="link-title">在线收听观看</span>
                 <span class="link-note">电台、电视直播</span>
             </a>
-            <a href="https://klpbbs.com/" class="link-item" target="_blank">
+            <a href="https://klpbbs.com/" class="link" target="_blank">
                 <span class="link-title">苦力怕论坛</span>
                 <span class="link-note">Minecraft玩家社区</span>
             </a>
-            <a href="https://ioshero.top/shortcuts/minesweeper/" class="link-item" target="_blank">
+            <a href="https://ioshero.top/shortcuts/minesweeper/" class="link" target="_blank">
                 <span class="link-title">在线扫雷</span>
                 <span class="link-note">经典游戏在线玩</span>
             </a>
-            <a href="https://up.woozooo.com/" class="link-item" target="_blank">
+            <a href="https://up.woozooo.com/" class="link" target="_blank">
                 <span class="link-title">蓝奏云</span>
                 <span class="link-note">高速文件分享</span>
             </a>
-            <a href="https://3g.gs/index.html" class="link-item" target="_blank">
-                <span class="link-title">iOSIPA聊天</span>
-                <span class="link-note">iOS用户交流社区</span>
-            </a>
-            <a href="https://kill.mhfs.eu.org/" class="link-item" target="_blank">
-                <span class="link-title">i4应用搜索</span>
-                <span class="link-note">应用搜索工具</span>
-            </a>
-            <a href="https://kill.mhfs.eu.org/iosipa" class="link-item" target="_blank">
-                <span class="link-title">iBot</span>
-                <span class="link-note">iOS助手工具</span>
-            </a>
-            <a href="https://cloud.iosipa.org/" class="link-item" target="_blank">
-                <span class="link-title">互传中心</span>
-                <span class="link-note">文件互传平台</span>
-            </a>
         </div>
-    </section>
+    </div>
 
     <footer>
-        <div class="footer-links"></div>
-        <div class="copyright">
-            © 2026 MaoIPA软件站 版权所有 | 本网站仅供学习交流使用，请勿用于商业用途
-        </div>
-        <div style="margin-top: 8px; font-size: 0.8rem; opacity: 0.7;"></div>
+        <p>© 2026 MaoIPA软件站 版权所有 | 本网站仅供学习交流使用</p>
     </footer>
 </div>
 
 <script>
-    // 页面加载完成后添加动画效果
-    document.addEventListener('DOMContentLoaded', function() {
-        // 为所有链接添加点击反馈
-        const links = document.querySelectorAll('.link-item');
-        links.forEach(link => {
-            link.addEventListener('click', function(e) {
-                if(this.style.opacity === '0.7') {
-                    e.preventDefault();
-                    return;
-                }
-                
-                // 添加点击效果
-                this.style.transform = 'scale(0.98)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 150);
-            });
-        });
-        
-        // 使用JavaScript添加简单的加载动画
-        const cards = document.querySelectorAll('.card');
-        const alertBox = document.querySelector('.alert');
-        const footer = document.querySelector('footer');
-        
-        // 初始设置：隐藏所有元素
-        cards.forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        });
-        
-        alertBox.style.opacity = '0';
-        alertBox.style.transform = 'translateY(30px)';
-        alertBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        
-        footer.style.opacity = '0';
-        footer.style.transform = 'translateY(30px)';
-        footer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        
-        // 使用setTimeout依次显示元素
-        setTimeout(() => {
-            alertBox.style.opacity = '1';
-            alertBox.style.transform = 'translateY(0)';
-            
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 300 + (index * 150)); // 每个卡片延迟150ms
-            });
-            
-            setTimeout(() => {
-                footer.style.opacity = '1';
-                footer.style.transform = 'translateY(0)';
-            }, 300 + (cards.length * 150));
-        }, 100);
-        
-        // 初始化下雪效果 - 简化版
-        initSnowEffect();
-    });
-    
-    // 下雪效果实现 - 修复版
+    // 下雪效果
+    const snow = document.getElementById('snow');
+    const snowBtn = document.getElementById('snowBtn');
+    let snowing = false;
     let snowflakes = [];
-    let snowInterval = null;
-    let isSnowing = false;
-    const snowContainer = document.getElementById('snow-container');
-    const snowToggle = document.getElementById('snowToggle');
-    const snowText = document.getElementById('snowText');
-    
-    function initSnowEffect() {
-        console.log('初始化下雪效果...');
-        
-        // 创建雪花
-        createSnowflakes();
-        
-        // 监听窗口大小变化
-        window.addEventListener('resize', createSnowflakes);
-        
-        // 下雪控制按钮点击事件 - 使用更可靠的事件监听
-        snowToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            toggleSnow();
-        });
-        
-        // 确保按钮可以点击
-        snowToggle.style.pointerEvents = 'auto';
-        snowToggle.style.cursor = 'pointer';
-        
-        // 初始状态：关闭下雪
-        stopSnow();
-        
-        console.log('下雪效果初始化完成');
-    }
-    
-    function createSnowflakes() {
-        // 清除现有雪花
-        snowContainer.innerHTML = '';
+
+    // 创建雪花
+    function createSnow() {
+        snow.innerHTML = '';
         snowflakes = [];
         
-        // 根据窗口大小创建适量雪花
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        const count = Math.min(120, Math.floor(width * height / 10000));
-        
-        console.log(`创建 ${count} 个雪花，窗口尺寸: ${width}x${height}`);
+        const count = Math.min(80, Math.floor(window.innerWidth * window.innerHeight / 10000));
         
         for (let i = 0; i < count; i++) {
-            const snowflake = document.createElement('div');
-            snowflake.className = 'snowflake';
-            snowflake.innerHTML = '❄';
-            snowflake.style.left = Math.random() * 100 + '%';
-            snowflake.style.fontSize = (Math.random() * 12 + 8) + 'px';
-            snowflake.style.opacity = Math.random() * 0.8 + 0.2;
-            snowflake.style.zIndex = '0';
-            snowflake.style.pointerEvents = 'none';
+            const flake = document.createElement('div');
+            flake.className = 'snowflake';
+            flake.innerHTML = '❄';
+            flake.style.left = Math.random() * 100 + '%';
+            flake.style.fontSize = (Math.random() * 10 + 15) + 'px';
+            flake.style.opacity = Math.random() * 0.7 + 0.3;
             
-            snowContainer.appendChild(snowflake);
+            snow.appendChild(flake);
+            
             snowflakes.push({
-                element: snowflake,
-                x: parseFloat(snowflake.style.left),
+                el: flake,
+                x: parseFloat(flake.style.left),
                 y: Math.random() * -100,
                 speed: Math.random() * 2 + 1,
-                sway: Math.random() * 2 - 1,
-                swaySpeed: Math.random() * 0.03 + 0.01,
-                rotation: Math.random() * 360,
-                rotationSpeed: Math.random() * 2 - 1
+                sway: Math.random() * 2 - 1
             });
         }
     }
-    
+
+    // 动画雪花
     function animateSnow() {
         const height = window.innerHeight;
-        const width = window.innerWidth;
         
-        snowflakes.forEach(snowflake => {
-            // 更新位置
-            snowflake.y += snowflake.speed;
-            snowflake.x += Math.sin(snowflake.y * snowflake.swaySpeed) * snowflake.sway;
-            snowflake.rotation += snowflake.rotationSpeed;
+        snowflakes.forEach(flake => {
+            flake.y += flake.speed;
+            flake.x += Math.sin(flake.y * 0.01) * flake.sway;
             
-            // 如果雪花超出边界，重置
-   
+            if (flake.y > height) {
+                flake.y = -20;
+                flake.x = Math.random() * 100;
+            }
+            
+            flake.el.style.left = flake.x + '%';
+            flake.el.style.top = flake.y + 'px';
+        });
+        
+        if (snowing) {
+            requestAnimationFrame(animateSnow);
+        }
+    }
+
+    // 切换下雪
+    function toggleSnow() {
+        snowing = !snowing;
+        
+        if (snowing) {
+            snow.style.opacity = '1';
+            snowBtn.innerHTML = '❄️ 关闭下雪';
+            snowBtn.style.background = '#e63946';
+            snowBtn.style.color = 'white';
+            createSnow();
+            animateSnow();
+        } else {
+            snow.style.opacity = '0';
+            snowBtn.innerHTML = '❄️ 开启下雪';
+            snowBtn.style.background = 'rgba(255, 255, 255, 0.9)';
+            snowBtn.style.color = '#333';
+        }
+    }
+
+    // 初始化
+    snowBtn.addEventListener('click', toggleSnow);
+    
+    // 窗口大小变化时重新创建雪花
+    window.addEventListener('resize', () => {
+        if (snowing) {
+            createSnow();
+        }
+    });
+
+    // 页面加载动画
+    document.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, i) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, i * 100);
+        });
+    });
+</script>
+
+</body>
+</html>
