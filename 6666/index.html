@@ -328,8 +328,8 @@
 <div class="container">
     <header>
         <h1>MaoIPA软件站</h1>
-        <div class="version">v3.0 大雪花版</div>
-        <p style="margin-top: 10px; color: #666; font-size: 14px;">❄️ 大雪花效果已默认开启，可点击右上角关闭</p>
+        <div class="version">v3.0 持续下雪版</div>
+        <p style="margin-top: 10px; color: #666; font-size: 14px;">❄️ 持续下雪效果已默认开启，可点击右上角关闭</p>
     </header>
 
     <div class="card">
@@ -429,97 +429,127 @@
     let snowflakes = [];
     let nightMode = false;
     let snowing = true; // 默认开启
-    
-    // 保存下雪状态到本地存储
     let snowAnimationId = null;
+    
+    // 雪花池 - 复用雪花对象，避免频繁创建销毁
+    let snowflakePool = [];
+    const MAX_FLAKES = 80; // 最大雪花数量
+    let activeFlakes = 0;
 
-    // 创建大雪花
-    function createSnow() {
-        snow.innerHTML = '';
-        snowflakes = [];
-        
-        // 减少雪花数量，因为雪花变大了
-        const count = Math.min(30, Math.floor(window.innerWidth * window.innerHeight / 20000));
-        
-        for (let i = 0; i < count; i++) {
+    // 创建初始雪花池
+    function createSnowflakePool() {
+        for (let i = 0; i < MAX_FLAKES; i++) {
             const flake = document.createElement('div');
             flake.className = 'snowflake';
-            
-            // 使用更大的雪花字符和组合
-            const snowChars = ['❄', '❅', '❆', '✻', '✼'];
-            const snowChar = snowChars[Math.floor(Math.random() * snowChars.length)];
-            
-            // 随机选择大雪花样式
-            const snowType = Math.random();
-            let snowHtml, baseSize;
-            
-            if (snowType < 0.3) {
-                // 特大雪花 - 使用多个字符组合
-                snowHtml = snowChar + snowChar;
-                baseSize = Math.random() * 35 + 30; // 30-65px
-            } else if (snowType < 0.6) {
-                // 大雪花 - 单字符但放大
-                snowHtml = snowChar;
-                baseSize = Math.random() * 25 + 25; // 25-50px
-            } else {
-                // 中等雪花
-                snowHtml = snowChar;
-                baseSize = Math.random() * 20 + 20; // 20-40px
-            }
-            
-            flake.innerHTML = snowHtml;
-            flake.style.left = Math.random() * 100 + '%';
-            flake.style.fontSize = baseSize + 'px';
-            flake.style.opacity = Math.random() * 0.8 + 0.2;
-            
+            flake.style.display = 'none';
             snow.appendChild(flake);
             
-            // 为每个雪花添加旋转属性 - 大雪花飘得慢一些
-            snowflakes.push({
+            snowflakePool.push({
                 el: flake,
-                x: parseFloat(flake.style.left),
-                y: Math.random() * -100,
-                speed: Math.random() * 1.5 + 0.5, // 更慢的速度
-                sway: Math.random() * 2 - 1,
-                rotation: Math.random() * 360,
-                rotationSpeed: Math.random() * 1.5 + 0.5, // 更慢的旋转
-                rotateDirection: Math.random() > 0.5 ? 1 : -1,
-                size: baseSize,
-                swayIntensity: Math.random() * 0.8 + 0.2
+                active: false,
+                x: 0,
+                y: 0,
+                speed: 0,
+                sway: 0,
+                rotation: 0,
+                rotationSpeed: 0,
+                rotateDirection: 1,
+                size: 0,
+                swayIntensity: 0
             });
         }
     }
 
-    // 动画雪花
+    // 激活一个雪花
+    function activateSnowflake() {
+        if (activeFlakes >= MAX_FLAKES || !snowing) return;
+        
+        const inactiveFlakes = snowflakePool.filter(f => !f.active);
+        if (inactiveFlakes.length === 0) return;
+        
+        const flake = inactiveFlakes[0];
+        flake.active = true;
+        activeFlakes++;
+        
+        // 使用更大的雪花字符
+        const snowChars = ['❄', '❅', '❆', '✻', '✼'];
+        const snowChar = snowChars[Math.floor(Math.random() * snowChars.length)];
+        
+        // 随机选择大雪花样式
+        const snowType = Math.random();
+        let snowHtml, baseSize;
+        
+        if (snowType < 0.3) {
+            // 特大雪花
+            snowHtml = snowChar + snowChar;
+            baseSize = Math.random() * 35 + 30; // 30-65px
+        } else if (snowType < 0.6) {
+            // 大雪花
+            snowHtml = snowChar;
+            baseSize = Math.random() * 25 + 25; // 25-50px
+        } else {
+            // 中等雪花
+            snowHtml = snowChar;
+            baseSize = Math.random() * 20 + 20; // 20-40px
+        }
+        
+        flake.el.innerHTML = snowHtml;
+        flake.el.style.display = 'block';
+        flake.el.style.left = Math.random() * 100 + '%';
+        flake.el.style.fontSize = baseSize + 'px';
+        flake.el.style.opacity = Math.random() * 0.8 + 0.2;
+        flake.el.style.transform = 'rotate(0deg) scale(1)';
+        
+        // 初始化属性
+        flake.x = parseFloat(flake.el.style.left);
+        flake.y = Math.random() * -100 - 50; // 从更上方开始
+        flake.speed = Math.random() * 1.5 + 0.5;
+        flake.sway = Math.random() * 2 - 1;
+        flake.rotation = Math.random() * 360;
+        flake.rotationSpeed = Math.random() * 1.5 + 0.5;
+        flake.rotateDirection = Math.random() > 0.5 ? 1 : -1;
+        flake.size = baseSize;
+        flake.swayIntensity = Math.random() * 0.8 + 0.2;
+    }
+
+    // 动画雪花 - 修复版：雪花飘出屏幕后重置
     function animateSnow() {
         const height = window.innerHeight;
         const width = window.innerWidth;
         
-        snowflakes.forEach(flake => {
-            // 更新位置 - 大雪花飘得更优雅
+        // 定期激活新雪花
+        if (Math.random() < 0.3 && activeFlakes < MAX_FLAKES) {
+            activateSnowflake();
+        }
+        
+        // 更新所有活跃雪花
+        snowflakePool.forEach(flake => {
+            if (!flake.active) return;
+            
+            // 更新位置
             flake.y += flake.speed;
             flake.x += Math.sin(flake.y * 0.005 + Date.now() * 0.0005) * flake.sway * flake.swayIntensity;
             
-            // 更新旋转角度 - 大雪花旋转更明显
+            // 更新旋转角度
             flake.rotation += flake.rotationSpeed * flake.rotateDirection;
             
-            // 边界检查
-            if (flake.y > height) {
-                flake.y = -50;
+            // 如果雪花飘出屏幕，重置它
+            if (flake.y > height + 100) {
+                // 重置到顶部
+                flake.y = Math.random() * -100 - 50;
                 flake.x = Math.random() * 100;
                 flake.rotation = Math.random() * 360;
+                flake.el.style.opacity = Math.random() * 0.8 + 0.2;
             }
+            
+            // 边界检查
             if (flake.x < -10) flake.x = -10;
             if (flake.x > 110) flake.x = 110;
-            
-            // 根据大小调整飘落效果
-            const swayFactor = flake.size > 40 ? 0.3 : 0.6;
-            const speedFactor = flake.size > 40 ? 0.7 : 1;
             
             // 应用位置和旋转
             flake.el.style.left = flake.x + '%';
             flake.el.style.top = flake.y + 'px';
-            flake.el.style.transform = `rotate(${flake.rotation}deg) scale(${speedFactor})`;
+            flake.el.style.transform = `rotate(${flake.rotation}deg)`;
             
             // 根据高度调整透明度（底部渐隐）
             const fadeHeight = height * 0.7;
@@ -539,7 +569,12 @@
         snow.style.opacity = '1';
         snowBtn.innerHTML = '❄️ 关闭下雪';
         snowBtn.classList.add('active');
-        createSnow();
+        
+        // 激活初始雪花
+        for (let i = 0; i < 20; i++) {
+            activateSnowflake();
+        }
+        
         snowAnimationId = requestAnimationFrame(animateSnow);
         
         // 保存设置到本地存储
@@ -558,6 +593,15 @@
             cancelAnimationFrame(snowAnimationId);
             snowAnimationId = null;
         }
+        
+        // 隐藏所有雪花
+        snowflakePool.forEach(flake => {
+            if (flake.active) {
+                flake.active = false;
+                flake.el.style.display = 'none';
+            }
+        });
+        activeFlakes = 0;
         
         // 保存设置到本地存储
         localStorage.setItem('snowing', 'false');
@@ -591,6 +635,9 @@
 
     // 初始化
     document.addEventListener('DOMContentLoaded', () => {
+        // 创建雪花池
+        createSnowflakePool();
+        
         // 初始化下雪状态
         const savedSnowing = localStorage.getItem('snowing');
         if (savedSnowing === 'false') {
@@ -621,46 +668,9 @@
             }, i * 100);
         });
         
-        // 窗口大小变化时重新创建雪花
+        // 窗口大小变化时重置雪花位置
         window.addEventListener('resize', () => {
             if (snowing) {
-                createSnow();
-            }
-        });
-        
-        // 键盘快捷键
-        document.addEventListener('keydown', (e) => {
-            // Ctrl+S 切换下雪
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                toggleSnow();
-            }
-            // Ctrl+N 切换夜间模式
-            if (e.ctrlKey && e.key === 'n') {
-                e.preventDefault();
-                toggleNightMode();
-            }
-        });
-        
-        // 添加点击效果：点击雪花时该雪花消失
-        snow.addEventListener('click', (e) => {
-            if (e.target.classList.contains('snowflake')) {
-                e.target.style.transition = 'all 0.5s ease';
-                e.target.style.opacity = '0';
-                e.target.style.transform = 'scale(0) rotate(360deg)';
-                setTimeout(() => {
-                    e.target.remove();
-                }, 500);
-            }
-        });
-    });
-
-    // 页面隐藏时暂停动画，显示时恢复
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            if (snowAnimationId && snowing) {
-                cancelAnimationFrame(snowAnimationId);
-                snowAnimationId = null;
-            }
-        } else {
-            if (!s
+                // 重置所有雪花位置
+                snowflakePool.forEach(flake => {
+                
