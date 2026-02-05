@@ -1,204 +1,267 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML导致浏览器崩溃的演示</title>
+    <title>Maoipa纯HTML网站</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&dis</style>
+</head>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>maoipa软件站</title>
+    <style>
+        :root {
+            --primary-color: #0071e3;
+            --bg-color: #f5f5f7;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --text-main: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent-color: #ff3b30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 50px;
+            background-image: radial-gradient(circle at 50% 0%, #e8e8ed 0%, #f5f5f7 100%);
+        }
+
+        .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
         }
-        .warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .demo-section {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 10px 20px;
+
+        /* Header Area */
+        header {
             text-align: center;
+            padding: 60px 0 40px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: -0.015em;
+            margin-bottom: 10px;
+        }
+
+        .slogan {
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Card Style */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        h2::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            background: var(--primary-color);
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+
+        .description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        /* Links/Buttons */
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .download-link {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background: #fff;
+            border-radius: 12px;
             text-decoration: none;
+            color: var(--text-main);
+            border: 1px solid #e5e5e7;
+            transition: all 0.2s;
+        }
+
+        .download-link:hover {
+            border-color: var(--primary-color);
+            background: #fafafa;
+        }
+
+        .link-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .link-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .password-tag {
             display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
+            font-size: 0.75rem;
+            background: #f2f2f7;
+            padding: 2px 8px;
             border-radius: 4px;
+            margin-top: 8px;
+            width: fit-content;
         }
-        button.danger {
-            background-color: #f44336;
+
+        /* Info Section */
+        .info-bar {
+            font-size: 0.9rem;
+            background: rgba(0, 113, 227, 0.05);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
         }
-        .code {
-            background-color: #f5f5f5;
-            padding: 10px;
-            border-radius: 4px;
-            font-family: monospace;
-            overflow-x: auto;
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .contact-list {
+            margin-bottom: 10px;
+        }
+
+        .contact-list span {
+            margin: 0 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            header h1 { font-size: 2rem; }
+            .card { padding: 20px; }
         }
     </style>
 </head>
 <body>
-    <h1>HTML导致浏览器崩溃的演示</h1>
-    
-    <div class="warning">
-        <strong>警告：</strong> 此页面包含可能导致浏览器变慢、无响应甚至崩溃的代码示例。
-        请谨慎操作，并确保您已保存所有工作。
-    </div>
-    
-    <div class="demo-section">
-        <h2>1. 无限循环的JavaScript</h2>
-        <p>这段代码会创建一个无限循环，迅速消耗CPU资源。</p>
-        <div class="code">
-            while(true) { /* 无限循环 */ }
-        </div>
-        <button class="danger" onclick="startInfiniteLoop()">运行无限循环</button>
-        <button onclick="stopInfiniteLoop()">停止循环</button>
-    </div>
-    
-    <div class="demo-section">
-        <h2>2. 内存泄漏</h2>
-        <p>通过不断创建对象而不释放，消耗浏览器内存。</p>
-        <div class="code">
-            let data = [];<br>
-            function addData() {<br>
-            &nbsp;&nbsp;data.push(new Array(1000000).join('x'));<br>
-            }
-        </div>
-        <button class="danger" onclick="startMemoryLeak()">开始内存泄漏</button>
-        <button onclick="stopMemoryLeak()">停止并清理</button>
-        <p>已分配内存: <span id="memory-usage">0</span> MB</p>
-    </div>
-    
-    <div class="demo-section">
-        <h2>3. 大量DOM元素</h2>
-        <p>创建大量DOM元素可能导致浏览器变慢。</p>
-        <div class="code">
-            for(let i = 0; i < 100000; i++) {<br>
-            &nbsp;&nbsp;document.body.appendChild(document.createElement('div'));<br>
-            }
-        </div>
-        <button class="danger" onclick="createManyElements()">创建大量DOM元素</button>
-        <p>已创建元素数量: <span id="element-count">0</span></p>
-    </div>
-    
-    <div class="demo-section">
-        <h2>4. 递归函数导致栈溢出</h2>
-        <p>深度递归可能导致调用栈溢出。</p>
-        <div class="code">
-            function recursive() {<br>
-            &nbsp;&nbsp;recursive();<br>
-            }
-        </div>
-        <button class="danger" onclick="startStackOverflow()">触发栈溢出</button>
-    </div>
-    
-    <div class="demo-section">
-        <h2>5. 同步阻塞操作</h2>
-        <p>执行长时间运行的同步操作会阻塞浏览器。</p>
-        <div class="code">
-            let start = Date.now();<br>
-            while(Date.now() - start < 10000) { /* 阻塞10秒 */ }
-        </div>
-        <button class="danger" onclick="blockBrowser()">阻塞浏览器10秒</button>
-    </div>
-    
-    <div class="demo-section">
-        <h2>如何防止浏览器崩溃</h2>
-        <ul>
-            <li>避免无限循环和深度递归</li>
-            <li>使用Web Workers处理CPU密集型任务</li>
-            <li>合理管理内存，及时释放不需要的对象</li>
-            <li>使用分页或虚拟滚动处理大量数据</li>
-            <li>避免长时间运行的同步操作</li>
-        </ul>
+
+<div class="container">
+    <header>
+        <h1>MaoIPA软件站</h1>
+        <p class="slogan">“ 从小黑软件站那里顺了点源码
+        所以看着跟小黑软件站有点像
+        不过已经经过作者同意了 ”</p>
+        <p>返回旧站：maoipa.mysxl.cn
+</p>
+    </header>
+
+    <div class="info-bar">
+        <strong>温馨提示：</strong> 本站提供苹果设备下载安装与服务。如有问题，请联系B站“
     </div>
 
-    <script>
-        // 无限循环控制
-        let infiniteLoopRunning = false;
-        function startInfiniteLoop() {
-            infiniteLoopRunning = true;
-            setTimeout(() => {
-                while(infiniteLoopRunning) {
-                    // 无限循环
-                }
-            }, 100);
-        }
+    <section class="card">
+        <h2>自创网盘专区</h2>
+        <p class="description">本站自创网盘，持续更新，资源均来自网络搜集，欢迎投稿</p>
+        <div class="link-grid">
+            <a href="https://mao666n.github.io/" class="download-link">
+                <span class="link-title">自创网盘</span>
+                
+                <span class="password-tag">密码：666
+        </a>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>软件站推广</h2>
         
-        function stopInfiniteLoop() {
-            infiniteLoopRunning = false;
-        }
-        
-        // 内存泄漏控制
-        let memoryLeakData = [];
-        let memoryLeakInterval;
-        function startMemoryLeak() {
-            memoryLeakInterval = setInterval(() => {
-                // 每次添加约1MB数据
-                memoryLeakData.push(new Array(1000000).join('x'));
-                updateMemoryUsage();
-            }, 100);
-        }
-        
-        function stopMemoryLeak() {
-            clearInterval(memoryLeakInterval);
-            memoryLeakData = [];
-            updateMemoryUsage();
-        }
-        
-        function updateMemoryUsage() {
-            document.getElementById('memory-usage').textContent = 
-                Math.round(memoryLeakData.length);
-        }
-        
-        // 大量DOM元素
-        function createManyElements() {
-            const container = document.createElement('div');
-            container.style.display = 'none'; // 隐藏以避免渲染性能问题
-            
-            for(let i = 0; i < 10000; i++) {
-                container.appendChild(document.createElement('div'));
-            }
-            
-            document.body.appendChild(container);
-            document.getElementById('element-count').textContent = 
-                parseInt(document.getElementById('element-count').textContent) + 10000;
-        }
-        
-        // 栈溢出
-        function startStackOverflow() {
-            function recursive() {
-                recursive();
-            }
-            
-            try {
-                recursive();
-            } catch(e) {
-                alert('栈溢出错误: ' + e.message);
-            }
-        }
-        
-        // 阻塞浏览器
-        function blockBrowser() {
-            const start = Date.now();
-            while(Date.now() - start < 10000) {
-                // 阻塞10秒
-            }
-            alert('阻塞结束');
-        }
-    </script>
-</body>
-</html>
+                
+            </a>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Cydia源</h2>
+            <a href="http://apt.gs" class="download-link">
+                <span class="link-title">沟石源</span>
+                
+            <a href="http://apt.senpai114514.icu/" class="download-link">
+                <span class="link-title">臭源</span>
+                
+                 <a href="http://apt.senpai114514.icu/" class="download-link">
+                <span class="link-title">臭源</span>
+               
+                   <a href="http://apt.abcydia.com/" class="download-link">
+                <span class="link-title">雷锋源</span>
+                
+                 <a href="http://cydia.skyglow.es/" class="download-link">
+                <span class="link-title">skyglow源</span>
+                 </a>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>推荐网站</h2>
+         <a href="https://tianqi.com/" class="download-link">
+                <span class="link-title">天气</span>
+                
+                 <a href="https://diantaiwang.com/" class="download-link">
+                <span class="link-title">在线收听观看</span>
+                <a href="https://klpbbs.com/" class="download-link">
+                <span class="link-title">苦力怕论坛</span>
+                
+                <a href="https://ioshero.top/shortcuts/minesweeper/" class="download-link">
+                <span class="link-title">在线扫雷</span>
+                
+                <a href="https://up.woozooo.com/" class="download-link">
+                <span class="link-title">蓝奏云</span>
+                
+                <a href="https://3g.gs/index.html" class="download-link">
+                <span class="link-title">iosipa聊天</span>
+                
+                <a href="https://kill.mhfs.eu.org/" class="download-link">
+                <span class="link-title">i4应用搜索</span>
+                
+                <a href="https://kill.mhfs.eu.org/iosipa" class="download-link">
+                <span class="link-title">iBot</span>
+              
+                  <a href="https://cloud.iosipa.org/" class="download-link">
+                <span class="link-title">互传中心</span>
