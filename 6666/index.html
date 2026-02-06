@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+？<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -439,7 +439,7 @@
            </a>
             <a href="http://7891vip.top/bilibili.php" class="link-item" target="_blank">
                 <span class="link-title">oldbili网页版</span>
-                <span class="link-note">有些视频加载不出来</span>
+                <span class="link-note">点击视频后把网站滑到最下面即可播放视频</span>
             </a>
             <a href="https://diantaiwang.com/" class="link-item" target="_blank">
                 <span class="link-title">在线收听观看</span>
@@ -543,116 +543,3 @@
             }, 300 + (cards.length * 150));
         }, 100);
         
-        // 初始化下雪效果
-        initSnowEffect();
-    });
-    
-    // 下雪效果实现
-    let snowflakes = [];
-    let snowInterval;
-    let isSnowing = false;
-    const snowContainer = document.getElementById('snow-container');
-    const snowToggle = document.getElementById('snowToggle');
-    const snowText = document.getElementById('snowText');
-    
-    function initSnowEffect() {
-        // 创建雪花
-        createSnowflakes();
-        
-        // 监听窗口大小变化
-        window.addEventListener('resize', createSnowflakes);
-        
-        // 下雪控制按钮点击事件
-        snowToggle.addEventListener('click', toggleSnow);
-        
-        // 初始状态：关闭下雪
-        stopSnow();
-    }
-    
-    function createSnowflakes() {
-        // 清除现有雪花
-        snowContainer.innerHTML = '';
-        snowflakes = [];
-        
-        // 根据窗口大小创建适量雪花
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        const count = Math.min(150, Math.floor(width * height / 8000));
-        
-        for (let i = 0; i < count; i++) {
-            const snowflake = document.createElement('div');
-            snowflake.className = 'snowflake';
-            snowflake.innerHTML = '❄';
-            snowflake.style.left = Math.random() * 100 + '%';
-            snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px';
-            snowflake.style.opacity = Math.random() * 0.7 + 0.3;
-            snowflake.style.zIndex = '-1';
-            
-            snowContainer.appendChild(snowflake);
-            snowflakes.push({
-                element: snowflake,
-                x: parseFloat(snowflake.style.left),
-                y: Math.random() * -100,
-                speed: Math.random() * 2 + 1,
-                sway: Math.random() * 2 - 1,
-                swaySpeed: Math.random() * 0.05 + 0.02
-            });
-        }
-    }
-    
-    function animateSnow() {
-        const height = window.innerHeight;
-        
-        snowflakes.forEach(snowflake => {
-            // 更新位置
-            snowflake.y += snowflake.speed;
-            snowflake.x += Math.sin(snowflake.y * snowflake.swaySpeed) * snowflake.sway;
-            
-            // 如果雪花超出底部边界，重置到顶部
-            if (snowflake.y > height) {
-                snowflake.y = -20;
-                snowflake.x = Math.random() * 100;
-            }
-            
-            // 更新DOM元素位置
-            snowflake.element.style.left = snowflake.x + '%';
-            snowflake.element.style.top = snowflake.y + 'px';
-            snowflake.element.style.transform = `rotate(${snowflake.y * 0.5}deg)`;
-        });
-    }
-    
-    function startSnow() {
-        if (isSnowing) return;
-        
-        isSnowing = true;
-        snowContainer.style.opacity = '1';
-        snowText.textContent = '关闭下雪';
-        
-        // 开始动画
-        snowInterval = setInterval(animateSnow, 50);
-        
-        // 添加活动状态样式
-        snowToggle.style.background = 'linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%)';
-    }
-    
-    function stopSnow() {
-        if (!isSnowing) return;
-        
-        isSnowing = false;
-        snowContainer.style.opacity = '0';
-        snowText.textContent = '开启下雪';
-        
-        // 停止动画
-        clearInterval(snowInterval);
-        
-        // 恢复原始样式
-        snowToggle.style.background = 'var(--gradient)';
-    }
-    
-    function toggleSnow() {
-        if (isSnowing) {
-            stopSnow();
-        } else {
-            startSnow();
-        }
-    }
