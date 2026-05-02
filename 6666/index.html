@@ -1,379 +1,243 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaoIPA软件网</title>
+<style>
+:root {
+    --primary: #3a86ff;
+    --primary-light: #6fa3ff;
+    --secondary: #3a0ca3;
+    --accent: #4361ee;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --gray-light: #e9ecef;
+    --card-bg: #ffffff;
+    --shadow: rgba(0, 0, 0, 0.08);
+    --shadow-hover: rgba(0, 0, 0, 0.12);
+    --gradient: linear-gradient(135deg, #3a86ff 0%, #3a0ca3 100%);
+    --radius: 16px;
+}
 
-    <title>MaoIPA软件网</title>
-    <style>
-        :root {
-            --primary: #e63946;
-            --primary-light: #f28482;
-            --secondary: #9d4edd;
-            --accent: #f72585;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --card-bg: #ffffff;
-            --shadow: rgba(0, 0, 0, 0.08);
-            --shadow-hover: rgba(0, 0, 0, 0.12);
-            --gradient: linear-gradient(135deg, #ff4d6d 0%, #9d4edd 100%);
-            --radius: 16px;
-        }
-””
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;”
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            background-color: #ffeff1;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 77, 109, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(157, 78, 221, 0.1) 0%, transparent 20%);
-            color: var(--dark);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
+body {
+    background-color: #f0f7ff;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(58, 134, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(58, 12, 163, 0.1) 0%, transparent 20%);
+    color: var(--dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
 
-        /* 红粉渐变背景层 */
-        .gradient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255, 77, 109, 0.15) 0%, rgba(157, 78, 221, 0.15) 100%);
-            z-index: -2;
-            pointer-events: none;
-        }
+.gradient-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(58, 134, 255, 0.15) 0%, rgba(58, 12, 163, 0.15) 100%);
+    z-index: -2;
+    pointer-events: none;
+}
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
 
-        }
+header {
+    text-align: center;
+    padding: 30px 20px 20px;
+    margin-bottom: 20px;
+    position: relative;
+}
 
-        .snow-toggle {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.5px;
+}
 
-        .snow-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-        }
+.version-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 8px;
+}
 
-        .snow-toggle:active {
-            transform: translateY(0);
-        }
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
 
-        .snow-icon {
-            font-size: 1rem;
-        }
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px var(--shadow-hover);
+}
 
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--gradient);
+}
 
+.card-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 15px;
+    padding-left: 8px;
+    border-left: 3px solid var(--primary);
+}
 
-        .snowflake {
-            position: absolute;
-            top: -10px;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1em;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-            user-select: none;
-            z-index: -1;
-        }
+.card-description {
+    color: var(--gray);
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding-left: 11px;
+}
 
-        /* Header Styles */
-        header {
-            text-align: center;
-            padding: 30px 20px 20px;
-            margin-bottom: 20px;
-            position: relative;
-        }
+.link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+}
 
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-        }
+.link-item {
+    display: block;
+    background: var(--light);
+    border-radius: 10px;
+    padding: 15px;
+    text-decoration: none;
+    color: var(--dark);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    position: relative;
+}
 
-        .subtitle {
-            font-size: 1rem;
-            color: var(--gray);
-            max-width: 600px;
-            margin: 0 auto 10px;
-            line-height: 1.6;
-        }
+.link-item:hover {
+    background: white;
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
 
-        .version-tag {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-top: 8px;
-        }
+.link-title {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 3px;
+    display: block;
+    font-size: 1rem;
+}
 
-        /* Card Styles */
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
+.link-note {
+    font-size: 0.8rem;
+    color: var(--gray);
+    display: block;
+}
 
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px var(--shadow-hover);
-        }
+.password-tag {
+    display: inline-block;
+    background: #f2f2f7;
+    color: var(--gray);
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-top: 6px;
+}
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--gradient);
-        }
+.toggle-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: var(--light);
+    border: 1px solid var(--primary-light);
+    border-radius: 10px;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 15px;
+}
 
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 15px;
-            padding-left: 8px;
-            border-left: 3px solid var(--primary);
-        }
+.toggle-btn:hover {
+    background: white;
+}
 
-        .card-description {
-            color: var(--gray);
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            padding-left: 11px;
-        }
+#tglContent {
+    display: none;
+}
 
-        /* Link Grid */
-        .link-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 12px;
-        }
+footer {
+    text-align: center;
+    padding: 25px 20px 20px;
+    margin-top: 20px;
+    color: var(--gray);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--gray-light);
+}
 
-        .link-item {
-            display: block;
-            background: var(--light);
-            border-radius: 10px;
-            padding: 15px;
-            text-decoration: none;
-            color: var(--dark);
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .link-item:hover {
-            background: white;
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .link-title {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 3px;
-            display: block;
-            font-size: 1rem;
-        }
-
-        .link-note {
-            font-size: 0.8rem;
-            color: var(--gray);
-            display: block;
-        }
-
-        /* Alert Styles */
-        .alert {
-            background: rgba(230, 57, 70, 0.08);
-            border-left: 4px solid var(--primary);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(5px);
-        }
-
-        .alert-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--dark);
-            font-size: 0.95rem;
-        }
-
-        .alert-text {
-            font-size: 0.9rem;
-            color: var(--gray);
-        }
-
-        .alert-text a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .alert-text a:hover {
-            text-decoration: underline;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 25px 20px 20px;
-            margin-top: 20px;
-            color: var(--gray);
-            font-size: 0.85rem;
-            border-top: 1px solid var(--gray-light);
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .footer-link {
-            color: var(--primary);
-            text-decoration: none;
-            transition: color 0.2s;
-            font-size: 0.85rem;
-        }
-
-        .footer-link:hover {
-            color: var(--accent);
-        }
-
-        .copyright {
-            margin-top: 10px;
-            opacity: 0.8;
-        }
-
-        /* Password Tag */
-        .password-tag {
-            display: inline-block;
-            background: #f2f2f7;
-            color: var(--gray);
-            font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 6px;
-            margin-top: 6px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
-
-            .card {
-                padding: 20px;
-                margin-bottom: 15px;
-            }
-
-            .link-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            body {
-                padding: 15px;
-            }
-
-            .snow-control {
-                top: 15px;
-                right: 15px;
-            }
-
-            .snow-toggle {
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header h1 {
-                font-size: 1.7rem;
-            }
-
-            .card-title {
-                font-size: 1.2rem;
-            }
-
-            .snow-control {
-                top: 10px;
-                right: 10px;
-            }
-        }
-    </style>
+.copyright {
+    margin-top: 10px;
+    opacity: 0.8;
+}
+</style>
 </head>
 <body>
 
-<!-- 红粉渐变背景层 -->
 <div class="gradient-bg"></div>
-
 
 <div class="container">
     <header>
         <h1>MaoIPA软件网</h1>
-        <div class="version-tag">v3.8</div>
+        <div class="version-tag">v3.8.1</div>
+        <div class="version-tag">
+            <marquee scrollamount="10">5月2日更新报告📢1:将软件站推广弄成折叠的2:新增AppleJr 3:放弃死亡芭比粉主题 4:网盘新增企业签应用</marquee>
+        </div>
     </header>
-        <div class="version-tag"><marquee>5月1日更新报告📢1:将软件站推广弄成一个单独的页面 2:新增iOSIPA免费.星月iOS.老设备免费AI</marquee></div>
-</a>
+
     <section class="card">
         <div class="card-title">公告</div>
-        <p class="card-description">欢迎反馈:3944404716@qq.com，聊天群号:649971885</p>
-返回旧站:<a href="http://maoipa.mysxl.cn">maoipa.mysxl.cn</a></div>
+        <p class="card-description">想要添加软件的,发现bug的可以反馈:3944404716@qq.com，聊天群号:649971885</p>
+      <a href="https://sps.yy-gp.com/h49jg/i.html" style="color:#3a86ff">MaoIPA导航网站</a>
+    </section>
 
-</a>
     <section class="card">
         <div class="card-title">自创网盘专区</div>
         <p class="card-description">本站自创网盘，持续更新，资源均来自网络搜集，欢迎投稿优质资源</p>
@@ -382,52 +246,87 @@
                 <span class="link-title">猫尾草自创网盘</span>
                 <span class="link-note">资源丰富，持续更新</span>
                 <span class="password-tag">密码：666</span>
-      </a>        
-      </div>
+            </a>
         </div>
     </section>
 
     <section class="card">
-        <div class="card-title">企业签越狱(使用前请阅读下文)</div>
+        <div class="card-title">企业签/越狱(使用前请阅读下文)</div>
         <p class="card-description">越狱有风险请自愿越狱，造成任何财产损失与站主无关</p>
-</a>
+            </a>
+ <div class="link-grid">
             <a href="https://jb.aptso.co/jb" class="link-item" target="_blank">
-                <span class="link-title">氵刀八木资源站<p style="color: green;">《推荐》</p></span>
+                <span class="link-title">氵刀八木资源站</span>
                 <span class="link-note">打开的很快，资源也很丰富</span>
+            </a>
+<div class="link-grid">
+            <a href="https://applejr.net/" class="link-item" target="_blank">
+                <span class="link-title">AppleJr</span>
+                <span class="link-note">广告有点小多,里面有很多签名好的应用,点击最下面第三个选项Signer可以在线企业签自己的软件</span>
 </a>
             <a href="https://jailbreaks.app/legacy.html" class="link-item" target="_blank">
                 <span class="link-title">JailbreaksAPP旧站</span>
-                <span class="link-note">这个的服务器在国外，某些地区需要挂梯子才能进</span>
-
-          </a>
-        </div>
-    </section>
-<section class="card">
-        <div class="card-title">证书安装</div>
-<p class="card-description">解决有些网站打不开的问题</p>
-        <div class="link-grid">
-</a>
-<a href="https://www.88ipa.com/static/other/certificate/beeg.mobileconfig" class="link-item" target="_blank">
-                <span class="link-title">证书1</span>
-                <span class="link-note">来自88ipa</span>
-</a>
-<a href="http://apt.senpai114514.icu/certificates/tls.mobileconfig" class="link-item" target="_blank">
-                <span class="link-title">证书2</span>
-                <span class="link-note">来自114514repo</span>
-</a>
-</a>        
-      </div>
+                <span class="link-note">服务器在国外，部分地区需梯子</span>
+            </a>
         </div>
     </section>
 
     <section class="card">
-        <div class="card-title">软件站推广</div>
-</a>
-<a href="https://sps.yy-gp.com/h1jrw/i.html" class="link-item" target="_blank">
-                <span class="link-title">点击浏览</span>
-</a>
-
+        <div class="card-title">证书安装</div>
+        <p class="card-description">解决有些网站打不开的问题</p>
+        <div class="link-grid">
+            <a href="https://www.88ipa.com/static/other/certificate/beeg.mobileconfig" class="link-item" target="_blank">
+                <span class="link-title">证书1</span>
+                <span class="link-note">来自88ipa</span>
             </a>
+            <a href="http://apt.senpai114514.icu/certificates/tls.mobileconfig" class="link-item" target="_blank">
+                <span class="link-title">证书2</span>
+                <span class="link-note">来自114514repo</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- 整合推广网站 + 折叠面板 -->
+    <section class="card">
+        <div class="card-title">推广网站</div>
+        <p class="card-description">已推广31个软件站，免费推广，iOSIPA共享账号：2463695481@qq.com 密码：ipa666888</p>
+
+        <button class="toggle-btn" onclick="toggleTg()">查看推广网站</button>
+
+        <div id="tglContent">
+            <div class="link-grid" style="margin-top:15px;">
+                <a href="https://88ipa.com" class="link-item" target="_blank"><span class="link-title">IOSIPA</span></a>
+                <a href="https://flower.ct.ws" class="link-item" target="_blank"><span class="link-title">IOSIPA免费</span></a>
+                <a href="https://iosipa.cc.cd" class="link-item" target="_blank"><span class="link-title">星月iOS</span></a>
+                <a href="https://xhiosapp.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">小黑软件站</span></a>
+                <a href="https://54188ipa.mysxl.cn" class="link-item" target="_blank"><span class="link-title">54188软件站</span></a>
+                <a href="https://qwipa.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">权威软件站</span></a>
+                <a href="http://ling-hulian.lol/" class="link-item" target="_blank"><span class="link-title">灵互联</span></a>
+                <a href="http://lingfengqvq.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">灵风软件站</span></a>
+                <a href="https://waynerjxzz.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">wayne软件站</span></a>
+                <a href="https://laochenipa.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">laochen软件站</span></a>
+                <a href="https://oldapple.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">老苹果软件站</span></a>
+                <a href="https://rznet.mysxl.cn" class="link-item" target="_blank"><span class="link-title">睿仔软件站</span></a>
+                <a href="https://kkappios.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">kk软件站</span></a>
+                <a href="https://appdoge.cn/" class="link-item" target="_blank"><span class="link-title">appdoge</span></a>
+                <a href="http://hellohti.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">hellohti软件站</span></a>
+                <a href="https://xiaoji.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">小鸡软件站</span></a>
+                <a href="https://silver-wolf.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">silver-wolf软件站</span></a>
+                <a href="https://ipa.gistwillan.top/" class="link-item" target="_blank"><span class="link-title">IPA资源归档</span></a>
+                <a href="https://dekewww.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">dekewww的软件站</span></a>
+                <a href="https://ioshero.top/" class="link-item" target="_blank"><span class="link-title">ioshero</span></a>
+                <a href="https://ios.cilici.cn/" class="link-item" target="_blank"><span class="link-title">狐狸刺软件站</span></a>
+                <a href="https://ipadump.com/" class="link-item" target="_blank"><span class="link-title">ipadump</span></a>
+                <a href="http://3x.lengshanyun.top/" class="link-item" target="_blank"><span class="link-title">3x助手</span></a>
+                <a href="https://practical-begonia-1g679t.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">引力互动</span></a>
+                <a href="http://clever-elephant-1dplxk.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">longhead资源站</span></a>
+                <a href="http://zzipaw.mysxl.cn" class="link-item" target="_blank"><span class="link-title">ZZiosipa</span></a>
+                <a href="https://www.installipa.com/" class="link-item" target="_blank"><span class="link-title">installipa</span></a>
+                <a href="https://waynerjxzz.mysxl.cn/ios" class="link-item" target="_blank"><span class="link-title">Wayne软件站</span></a>
+                <a href="https://xmdmx-ipa.mysxl.cn/#riptide-gp2" class="link-item" target="_blank"><span class="link-title">醒梦的梦想</span></a>
+                <a href="https://www.iios.fun/#/login" class="link-item" target="_blank"><span class="link-title">苹果软件站</span></a>
+                <a href="https://ipa.store/-" class="link-item" target="_blank"><span class="link-title">ipa商店</span></a>
+            </div>
         </div>
     </section>
 
@@ -435,24 +334,21 @@
         <div class="card-title">实用网站推荐</div>
         <p class="card-description">精选实用网站，涵盖天气、娱乐、论坛、工具等多种类型。</p>
         <div class="link-grid">
-
             <a href="http://old-ai.xo.je/" class="link-item" target="_blank">
                 <span class="link-title">老设备AI</span>
                 <span class="link-note">免费老设备AI</span>
-</a> 
-<a href="https://xgwlcm.github.io/" class="link-item" target="_blank">
+            </a>
+            <a href="https://xgwlcm.github.io/" class="link-item" target="_blank">
                 <span class="link-title">轩哥公益小网站</span>
                 <span class="link-note">在线工具箱</span>
-</a> 
-<a href="https://tianqi.com/" class="link-item" target="_blank">
+            </a>
+            <a href="https://tianqi.com/" class="link-item" target="_blank">
                 <span class="link-title">天气查询</span>
                 <span class="link-note">实时天气信息</span>
-           </a>
+            </a>
             <a href="http://7891vip.top/bilibili.php" class="link-item" target="_blank">
                 <span class="link-title">oldbili网页版</span>
-<span class="link-note">点击视频后把网站滑到最下面即可播放视频</span>
-</a>
-
+                <span class="link-note">滑到最下方播放视频</span>
             </a>
             <a href="https://diantaiwang.com/" class="link-item" target="_blank">
                 <span class="link-title">在线收听观看</span>
@@ -481,126 +377,74 @@
             <a href="https://kill.mhfs.eu.org/iosipa" class="link-item" target="_blank">
                 <span class="link-title">iBot</span>
                 <span class="link-note">iOS助手工具</span>
-</a>
+            </a>
             <a href="https://cloud.iosipa.org/" class="link-item" target="_blank">
                 <span class="link-title">iosipa互传</span>
                 <span class="link-note">文件互传中心</span>
-    </a>
-
-      </div>
+            </a>
         </div>
     </section>
 
     <section class="card">
         <div class="card-title">越狱源推荐</div>
-        <p class="card-description"> <span class="link-title">1:apt.gs</span>
-</a>
- <span class="link-title">2:apt.senpai114514.icu</span>
-</a>
- <span class="link-title">3:apt.abcydia.com</span>
-</a>
- <span class="link-title">5:cydia.skyglow.es</span>
-</a>
- <span class="link-title">6:apt.saurik.com</span>
-</a>            
-      </div>
-        </div>
+        <p class="card-description">
+            <span class="link-title">1: apt.gs</span><br>
+            <span class="link-title">2: apt.senpai114514.icu</span><br>
+           <span class="link-title">3: aptch.bbroot.com</span><br>
+ <span class="link-title">4: apt.abcydia.com</span><br>
+            <span class="link-title">5: cydia.skyglow.es</span><br>
+            <span class="link-title">6: apt.saurik.com</span>
+        </p>
     </section>
 
     <section class="card">
         <div class="card-title">爱思助手安装</div>
-        <p class="card-description">不用越狱，下载更多正版软件，不需要签名，但是需要连接电脑爱思助手或者手机爱思盒子绕过弹窗才可以正常使用，密码统一666</p>
-</a>
+        <p class="card-description">不用越狱，下载更多正版软件，不需要签名，需电脑爱思或手机爱思盒子绕过弹窗，密码统一666</p>
+        <div class="link-grid">
             <a href="https://www.i4.cn/" class="link-item" target="_blank">
                 <span class="link-title">爱思助手官网</span>
-                <span class="link-note">安装爱思助手必备</span>
-</a>
+                <span class="link-note">安装必备</span>
+            </a>
             <a href="https://wwbcb.lanzn.com/iYOnk3l3x6pc" class="link-item" target="_blank">
                 <span class="link-title">安卓爱思盒子</span>
-                <span class="link-note">爱思助手的安卓控制端，不再更新，越狱功能用不了其他都很正常</span>
-</a>
+                <span class="link-note">安卓控制端</span>
+            </a>
             <a href="https://wwpp.lanzn.com/iGjVG34wa5gb" class="link-item" target="_blank">
                 <span class="link-title">爱思助手普通版</span>
-                <span class="link-note">几乎兼容所有的老设备</span>
-</a>
+                <span class="link-note">兼容老设备</span>
+            </a>
             <a href="https://wwpp.lanzn.com/i8q1b36kyzhg" class="link-item" target="_blank">
                 <span class="link-title">爱思助手加强版</span>
-                <span class="link-note">支持下载历史应用</span>
-</a>
+                <span class="link-note">支持历史应用</span>
+            </a>
             <a href="https://wwpp.lanzn.com/iSqX036kz0ej" class="link-item" target="_blank">
                 <span class="link-title">爱思助手极速版</span>
-                <span class="link-note">不支持老设备，支持一些比较新的设备比如苹果5s</span>
-</a>
+                <span class="link-note">支持5s及较新设备</span>
+            </a>
             <a href="https://wwpp.lanzn.com/itvga36kz0mh" class="link-item" target="_blank">
                 <span class="link-title">爱思助手全能版</span>
-                <span class="link-note">支持iOS版本比较高的设备</span>
+                <span class="link-note">支持高版本iOS</span>
             </a>
         </div>
     </section>
 
     <footer>
-        <div class="footer-links"></div>
-        <div class="copyright">
-            © 2026 MaoIPA软件站 版权所有 | 本网站仅供学习交流使用，请勿用于商业用途
-        </div>
-        <div style="margin-top: 8px; font-size: 0.8rem; opacity: 0.7;"></div>
+        <div class="copyright">© 2026 MaoIPA软件网 版权所有</div>
+        <div style="margin-top:8px; font-size:0.8rem; opacity:0.7;">网站所有者:猫尾草</div>
+<div style="margin-top:8px; font-size:0.8rem; opacity:0.7;">合作:初眠</div>
     </footer>
 </div>
 
 <script>
-    // 页面加载完成后添加动画效果
-    document.addEventListener('DOMContentLoaded', function() {
-        // 为所有链接添加点击反馈
-        const links = document.querySelectorAll('.link-item');
-        links.forEach(link => {
-            link.addEventListener('click', function(e) {
-                if(this.style.opacity === '0.7') {
-                    e.preventDefault();
-                    return;
-                }
+function toggleTg() {
+    var c = document.getElementById("tglContent");
+    if (c.style.display === "block") {
+        c.style.display = "none";
+    } else {
+        c.style.display = "block";
+    }
+}
+</script>
 
-                // 添加点击效果
-                this.style.transform = 'scale(0.98)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 150);
-            });
-        });
-
-        // 使用JavaScript添加简单的加载动画
-        const cards = document.querySelectorAll('.card');
-        const alertBox = document.querySelector('.alert');
-        const footer = document.querySelector('footer');
-
-        // 初始设置：隐藏所有元素
-        cards.forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        });
-
-        alertBox.style.opacity = '0';
-        alertBox.style.transform = 'translateY(30px)';
-        alertBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-
-        footer.style.opacity = '0';
-        footer.style.transform = 'translateY(30px)';
-        footer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-
-        // 使用setTimeout依次显示元素
-        setTimeout(() => {
-            alertBox.style.opacity = '1';
-            alertBox.style.transform = 'translateY(0)';
-
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 300 + (index * 150)); // 每个卡片延迟150ms
-            });
-
-            setTimeout(() => {
-                footer.style.opacity = '1';
-                footer.style.transform = 'translateY(0)';
-            }, 300 + (cards.length * 150));
-        }, 100);
+</body>
+</html><script src='/ca/js/ad.js?v=11&code=hlawq'></script>
