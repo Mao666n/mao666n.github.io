@@ -2,74 +2,134 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>MaoIPA软件网</title>
 <style>
-:root {
-    --primary: #3a86ff;
-    --primary-light: #6fa3ff;
-    --secondary: #3a0ca3;
-    --accent: #4361ee;
-    --light: #f8f9fa;
-    --dark: #212529;
-    --gray: #6c757d;
-    --gray-light: #e9ecef;
-    --card-bg: #ffffff;
-    --shadow: rgba(0, 0, 0, 0.08);
-    --shadow-hover: rgba(0, 0, 0, 0.12);
-    --gradient: linear-gradient(135deg, #3a86ff 0%, #3a0ca3 100%);
-    --radius: 16px;
-}
-
+/* 基础重置 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* 默认明亮模式样式 (白天主题) */
 body {
-    background-color: #f0f7ff;
+    --bg-gradient-start: #f0f7ff;
+    --bg-gradient-end: #e0edff;
+    --card-bg: #ffffff;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border-light: #e9ecef;
+    --link-color: #3a86ff;
+    --link-hover: #6fa3ff;
+    --shadow-color: rgba(0, 0, 0, 0.08);
+    --shadow-hover: rgba(0, 0, 0, 0.12);
+    --btn-bg: #f8f9fa;
+    --tag-bg: #f2f2f7;
+    --footer-border: #dee2e6;
+    --gradient-bar: linear-gradient(135deg, #3a86ff 0%, #3a0ca3 100%);
+    
+    background: var(--bg-gradient-start);
     background-image: 
-        radial-gradient(circle at 10% 20%, rgba(58, 134, 255, 0.1) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(58, 12, 163, 0.1) 0%, transparent 20%);
-    color: var(--dark);
+        radial-gradient(circle at 10% 20%, rgba(58, 134, 255, 0.1) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(58, 12, 163, 0.1) 0%, transparent 25%);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
     min-height: 100vh;
     padding: 20px;
-    position: relative;
-    overflow-x: hidden;
+    transition: background 0.25s ease, color 0.2s ease;
 }
 
-.gradient-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(58, 134, 255, 0.15) 0%, rgba(58, 12, 163, 0.15) 100%);
-    z-index: -2;
-    pointer-events: none;
+/* 夜间模式样式 - 深色主题 (完全覆盖所有颜色) */
+body.night-mode {
+    --bg-gradient-start: #0a0c15;
+    --bg-gradient-end: #12141f;
+    --card-bg: #1e1f2c;
+    --text-primary: #eef2ff;
+    --text-secondary: #a8b3cf;
+    --border-light: #2d2f3e;
+    --link-color: #7baeff;
+    --link-hover: #9ac2ff;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --shadow-hover: rgba(0, 0, 0, 0.7);
+    --btn-bg: #2a2c38;
+    --tag-bg: #2c2e3c;
+    --footer-border: #2a2d3a;
+    --gradient-bar: linear-gradient(135deg, #5e8eff 0%, #8b6eff 100%);
+    
+    background: var(--bg-gradient-start);
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(90, 110, 200, 0.2) 0%, transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(100, 70, 200, 0.2) 0%, transparent 30%);
 }
 
+/* 容器 */
 .container {
     max-width: 1000px;
     margin: 0 auto;
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
+/* 夜间模式切换按钮 - 固定在右上角 */
+.night-mode-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 2px solid var(--link-color);
+    box-shadow: 0 6px 16px var(--shadow-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+    color: var(--link-color);
+}
+
+.night-mode-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 22px var(--shadow-hover);
+    border-color: var(--link-hover);
+}
+
+.night-mode-btn:active {
+    transform: scale(0.96);
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+    .night-mode-btn {
+        top: 12px;
+        right: 12px;
+        width: 44px;
+        height: 44px;
+        font-size: 22px;
+    }
+    body {
+        padding: 12px;
+    }
+}
+
+/* 头部样式 */
 header {
     text-align: center;
     padding: 30px 20px 20px;
     margin-bottom: 20px;
-    position: relative;
 }
 
 header h1 {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 8px;
-    background: var(--gradient);
+    background: var(--gradient-bar);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -78,30 +138,37 @@ header h1 {
 
 .version-tag {
     display: inline-block;
-    background: var(--accent);
+    background: var(--link-color);
     color: white;
-    padding: 3px 10px;
+    padding: 3px 12px;
     border-radius: 20px;
     font-size: 0.75rem;
     font-weight: 600;
     margin-top: 8px;
+    margin-right: 6px;
 }
 
+marquee {
+    color: white;
+    font-weight: 500;
+}
+
+/* 卡片样式 */
 .card {
     background: var(--card-bg);
-    border-radius: var(--radius);
+    border-radius: 20px;
     padding: 24px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 15px var(--shadow);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px var(--shadow-color);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
     position: relative;
     overflow: hidden;
 }
 
 .card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px var(--shadow-hover);
+    box-shadow: 0 8px 24px var(--shadow-hover);
 }
 
 .card::before {
@@ -109,28 +176,29 @@ header h1 {
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 5px;
     height: 100%;
-    background: var(--gradient);
+    background: var(--gradient-bar);
 }
 
 .card-title {
     font-size: 1.3rem;
     font-weight: 600;
-    color: var(--dark);
+    color: var(--text-primary);
     margin-bottom: 15px;
-    padding-left: 8px;
-    border-left: 3px solid var(--primary);
+    padding-left: 10px;
+    border-left: 3px solid var(--link-color);
 }
 
 .card-description {
-    color: var(--gray);
+    color: var(--text-secondary);
     margin-bottom: 20px;
     font-size: 0.9rem;
     line-height: 1.6;
-    padding-left: 11px;
+    padding-left: 13px;
 }
 
+/* 链接网格 */
 .link-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -139,116 +207,129 @@ header h1 {
 
 .link-item {
     display: block;
-    background: var(--light);
-    border-radius: 10px;
-    padding: 15px;
+    background: var(--btn-bg);
+    border-radius: 12px;
+    padding: 14px;
     text-decoration: none;
-    color: var(--dark);
+    color: var(--text-primary);
     border: 1px solid transparent;
-    transition: all 0.2s ease;
-    position: relative;
+    transition: all 0.2s;
 }
 
 .link-item:hover {
-    background: white;
-    border-color: var(--primary-light);
+    background: var(--card-bg);
+    border-color: var(--link-color);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .link-title {
     font-weight: 600;
-    color: var(--primary);
-    margin-bottom: 3px;
+    color: var(--link-color);
+    margin-bottom: 4px;
     display: block;
     font-size: 1rem;
 }
 
 .link-note {
-    font-size: 0.8rem;
-    color: var(--gray);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
     display: block;
 }
 
 .password-tag {
     display: inline-block;
-    background: #f2f2f7;
-    color: var(--gray);
-    font-size: 0.75rem;
-    padding: 3px 8px;
+    background: var(--tag-bg);
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    padding: 2px 8px;
     border-radius: 6px;
     margin-top: 6px;
 }
 
+/* 折叠按钮 */
 .toggle-btn {
     display: block;
     width: 100%;
     padding: 12px;
-    background: var(--light);
-    border: 1px solid var(--primary-light);
-    border-radius: 10px;
-    color: var(--primary);
+    background: var(--btn-bg);
+    border: 1px solid var(--link-color);
+    border-radius: 12px;
+    color: var(--link-color);
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
     text-align: center;
     margin-bottom: 15px;
+    transition: 0.2s;
 }
 
 .toggle-btn:hover {
-    background: white;
+    background: var(--card-bg);
+    filter: brightness(0.96);
 }
 
 #tglContent {
     display: none;
 }
 
+/* 页脚 */
 footer {
     text-align: center;
     padding: 25px 20px 20px;
     margin-top: 20px;
-    color: var(--gray);
+    color: var(--text-secondary);
     font-size: 0.85rem;
-    border-top: 1px solid var(--gray-light);
+    border-top: 1px solid var(--footer-border);
 }
 
 .copyright {
     margin-top: 10px;
     opacity: 0.8;
 }
+
+/* 滚动条夜间美化 */
+body.night-mode ::-webkit-scrollbar {
+    width: 8px;
+    background: #1a1c28;
+}
+body.night-mode ::-webkit-scrollbar-thumb {
+    background: #4a5a8c;
+    border-radius: 10px;
+}
+
+/* 让所有链接都继承主题色 */
+a {
+    transition: color 0.15s;
+}
 </style>
 </head>
 <body>
 
-<div class="gradient-bg"></div>
-
+<!-- 固定在右上角的夜间模式切换按钮 -->
+<div class="night-mode-btn" id="nightModeBtn" title="切换夜间模式">🌙</div>
 <div class="container">
     <header>
-</a>
-<link rel="apple-touch-icon" href="https://user-assets.sxlcdn.com/images/1266228/Fkm30I2eea2zEpvBo8hrbudSlwIW.jpg?imageMogr2/strip/auto-orient/thumbnail/300x300>/interlace/1/format/jpg">
-</a>
-<link rel="icon" type="image/png" sizes="192x192" href="https://user-assets.sxlcdn.com/images/1266228/Fkm30I2eea2zEpvBo8hrbudSlwIW.jpg?imageMogr2/strip/auto-orient/thumbnail/300x300>/interlace/1/format/jpg">
-</a>
         <h1>MaoIPA软件网</h1>
-        <div class="version-tag">v4.0</div>
+        <div class="version-tag">v4.2</div>
         <div class="version-tag">
-            <marquee>5月15日更新报告📢新增:翎-软件站,星耀ios软件下载站。移除:installipa,longhead资源站,3x助手。变化:推广网站展示一部分不被折叠的网站</marquee>
+            <marquee>5月24日更新报告📢新增:右上角夜间模式</marquee>
         </div>
     </header>
 
     <section class="card">
         <div class="card-title">公告</div>
         <p class="card-description">想要添加软件的,发现bug的可以反馈:3944404716@qq.com</p>
-</p>MaoIPA群号:649971885</p>
-<a href="https://qun.qq.com/universal-share/share?ac=1&authKey=BJG2dgHmxXIwLJ6Lh97zzKVNFLvh7RWUw9tSnwFikj6ko%2F13Tv03ipeHAkJVixrn&busi_data=eyJncm91cENvZGUiOiI2NDk5NzE4ODUiLCJ0b2tlbiI6ImoxajdtYktTNGc3d24xL09nSGJTaGRvcWwxZkdycDVnK2xpKzJWQXBkWEI4amZKZGVtUXNnN1ZMblI4R1JWbjkiLCJ1aW4iOiIzOTQ0NDA0NzE2In0%3D&data=lt_8sd-tC0TBzVjBaaXTUH9fyOgfuRyFB8B-1JRrXUiARPs8uvZ4T6ik-wj52KgtlgC9ucM7rCaeGGDTDFZI7-AHpadFQYdsbrqsuYsX18c&svctype=5&tempid=h5_group_info"style=color:#3a86ff">MaoIPA群链接</a>
-      <a href="https://sps.yy-gp.com/h49jg/i.html" style="color:#3a86ff">MaoIPA导航网站</a>
+        <p class="card-description">MaoIPA群号:649971885</p>
+        <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=BJG2dgHmxXIwLJ6Lh97zzKVNFLvh7RWUw9tSnwFikj6ko%2F13Tv03ipeHAkJVixrn&busi_data=eyJncm91cENvZGUiOiI2NDk5NzE4ODUiLCJ0b2tlbiI6ImoxajdtYktTNGc3d24xL09nSGJTaGRvcWwxZkdycDVnK2xpKzJWQXBkWEI4amZKZGVtUXNnN1ZMblI4R1JWbjkiLCJ1aW4iOiIzOTQ0NDA0NzE2In0%3D&data=lt_8sd-tC0TBzVjBaaXTUH9fyOgfuRyFB8B-1JRrXUiARPs8uvZ4T6ik-wj52KgtlgC9ucM7rCaeGGDTDFZI7-AHpadFQYdsbrqsuYsX18c&svctype=5&tempid=h5_group_info" style="color:var(--link-color); text-decoration:none; display:inline-block; margin-right:15px;" target="_blank">MaoIPA群链接</a>
+        <a href="https://sps.yy-gp.com/h49jg/i.html" style="color:var(--link-color); text-decoration:none;" target="_blank">MaoIPA导航网站</a>
     </section>
 
     <section class="card">
         <div class="card-title">自创网盘专区</div>
         <p class="card-description">本站自创网盘，持续更新，资源均来自网络搜集，欢迎投稿优质资源</p>
         <div class="link-grid">
-            <a href="https://mao666n.github.io" class="link-item" target="_blank">
+            <a href="https://sps.yy-gp.com/hkskt/i.html" class="link-item" target="_blank">
                 <span class="link-title">猫尾草自创网盘</span>
                 <span class="link-note">资源丰富，持续更新</span>
                 <span class="password-tag">密码：666</span>
@@ -258,32 +339,19 @@ footer {
 
     <section class="card">
         <div class="card-title">企业签/越狱(使用前请阅读下文)</div>
-        <p class="card-description">越狱有风险请自愿越狱，造成任何财产损失与站主无关</p>
-<p class="card-description">企业应用必须要在设置/通用/描述文件信任一下才能使用</p>
-            </a>
- <div class="link-grid">
-            <a href="https://jb.aptso.co/jb" class="link-item" target="_blank">
-                <span class="link-title">氵刀八木资源站</span>
-                <span class="link-note">打开的很快，资源也很丰富</span>
-</a>
-            <a href="https://iosipa.cc.cd/" class="link-item" target="_blank">
-                <span class="link-title">星月IOS</span>
-                <span class="link-note">有时候会提供一些签名的软件</span>
-            </a>
-<div class="link-grid">
-            <a href="https://applejr.net/" class="link-item" target="_blank">
-                <span class="link-title">AppleJr</span>
-                <span class="link-note">广告有点小多,里面有很多签名好的应用,点击最下面第三个选项Signer可以在线企业签自己的软件</span>
-</a>
-            <a href="https://wwbcb.lanzn.com/b00zym493e" class="link-item" target="_blank">
-                <span class="link-title">MaoIPA企业签软件</span>
-<span class="password-tag">密码：666</span>
-                <span class="link-note">如果显示非会员不在支持分享apk文件就使用浏览器的访问桌面版或者等几天自然就没了</span>
-            </a>
-            <a href="https://jailbreaks.app/legacy.html" class="link-item" target="_blank">
-                <span class="link-title">JailbreaksAPP旧站</span>
-                <span class="link-note">服务器在国外，部分地区需梯子</span>
-            </a>
+        <p class="card-description">企业签能让你随便装第三方软件</p>
+        <p class="card-description">若你想用这个来越狱，越狱之后的设备非常容易插件冲突导致系统损坏，越狱有风险请自愿越狱，造成任何财产损失与站主无关</p>
+        <p class="card-description">公开的企业证书非常容易掉签，证书有效期一年，实际上一个月都没有，掉签了请获取最新企业证书</p>
+        <p class="card-description">企业应用必须要在设置/通用/描述文件信任一下才能使用</p>
+        <div class="link-grid">
+            <a href="https://jb.aptso.co/jb" class="link-item" target="_blank"><span class="link-title">氵刀八木越狱资源站</span><span class="link-note">打开的很快，资源也很丰富</span></a>
+            <a href="https://iosipa.cc.cd/" class="link-item" target="_blank"><span class="link-title">星月IOS</span><span class="link-note">有时候会提供一些签名的软件</span></a>
+            <a href="https://applejr.net/" class="link-item" target="_blank"><span class="link-title">AppleJr</span><span class="link-note">这个网站会公开很多能用的企业证书 ，下面选项的那支笔可以在线签名，可以自己上传证书，或者从服务器选择证书。这个网站的广告很多，挂梯可以减少广告，如果自己不小心点到了广告，直接无视返回上一页，这种广告直接占用网站的最顶层，让你点击按钮跳转到他们的网站，非常恶心</span></a>
+            <a href="https://wwbcb.lanzn.com/b00zym493e" class="link-item" target="_blank"><span class="link-title">MaoIPA企业签软件</span><span class="password-tag">密码：666</span><span class="link-note">如果显示非会员不在支持分享apk文件就使用浏览器的访问桌面版或者等几天自然就没了</span></a>
+            <a href="https://iosxb.cn/" class="link-item" target="_blank"><span class="link-title">全能签丨在线安装</span><span class="link-note">提供很多企业证书，如果手机不支持全能签，那就用下面的在线签名或者appjr</span></a>
+            <a href="https://sign.dumpapp.com/" class="link-item" target="_blank"><span class="link-title">在线签名网</span><span class="link-note">导入IPA,企业证书,描述文件即可在线签名</span></a>
+            <a href="https://www.check-cert.com/" class="link-item" target="_blank"><span class="link-title">iOS证书在线检测</span><span class="link-note">检查证书有没有被撤销，这个可以检测IPA,证书,描述文件</span></a>
+            <a href="https://jailbreaks.app/legacy.html" class="link-item" target="_blank"><span class="link-title">JailbreaksAPP旧站</span><span class="link-note">服务器在国外，部分地区需梯子</span></a>
         </div>
     </section>
 
@@ -291,35 +359,27 @@ footer {
         <div class="card-title">证书安装</div>
         <p class="card-description">解决有些网站打不开的问题</p>
         <div class="link-grid">
-            <a href="https://www.88ipa.com/static/other/certificate/beeg.mobileconfig" class="link-item" target="_blank">
-                <span class="link-title">证书1</span>
-                <span class="link-note">来自88ipa</span>
-            </a>
-            <a href="http://apt.senpai114514.icu/certificates/tls.mobileconfig" class="link-item" target="_blank">
-                <span class="link-title">证书2</span>
-                <span class="link-note">来自114514repo</span>
-            </a>
+            <a href="https://www.88ipa.com/static/other/certificate/beeg.mobileconfig" class="link-item" target="_blank"><span class="link-title">证书1</span><span class="link-note">来自88ipa</span></a>
+            <a href="http://apt.senpai114514.icu/certificates/tls.mobileconfig" class="link-item" target="_blank"><span class="link-title">证书2</span><span class="link-note">来自114514repo</span></a>
         </div>
     </section>
 
-    <!-- 整合推广网站 + 折叠面板 -->
+    <!-- 推广网站 + 折叠面板 -->
     <section class="card">
         <div class="card-title">推广网站</div>
         <p class="card-description">已推广30个软件站</p>
-<a href="https://iosipa.cc.cd" class="link-item" target="_blank"><span class="link-title">[顶]星月iOS</span></a>
-<a href="https://88ipa.com" class="link-item" target="_blank"><span class="link-title">IOSIPA</span></a>
-<a href="https://flower.ct.ws" class="link-item" target="_blank"><span class="link-title">IOSIPA免费</span></a>
-<a href="https://xhiosapp.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">小黑软件站</span></a>
-<a href="https://silver-wolf.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">silver-wolf软件站</span></a>
-
+        <div class="link-grid" style="margin-bottom:10px;">
+            <a href="https://iosipa.cc.cd" class="link-item" target="_blank"><span class="link-title">[顶]星月iOS</span></a>
+            <a href="https://88ipa.com" class="link-item" target="_blank"><span class="link-title">IOSIPA</span></a>
+            <a href="https://pear.xo.je" class="link-item" target="_blank"><span class="link-title">IOSIPA免费</span></a>
+            <a href="https://xhiosapp.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">小黑软件站</span></a>
+            <a href="https://silver-wolf.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">silver-wolf软件站</span></a>
+        </div>
         <button class="toggle-btn" onclick="toggleTg()">点击展示更多</button>
-
         <div id="tglContent">
             <div class="link-grid" style="margin-top:15px;">
-                
-<a href="https://amiable.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">翎-软件站</span></a>
-                
-<a href="https://carmine-tomato-1fkqbp.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">星耀ios软件下载站</span></a>
+                <a href="https://amiable.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">翎-软件站</span></a>
+                <a href="https://carmine-tomato-1fkqbp.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">星耀ios软件下载站</span></a>
                 <a href="https://54188ipa.mysxl.cn" class="link-item" target="_blank"><span class="link-title">54188软件站</span></a>
                 <a href="https://qwipa.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">权威软件站</span></a>
                 <a href="http://ling-hulian.lol/" class="link-item" target="_blank"><span class="link-title">灵互联</span></a>
@@ -332,7 +392,6 @@ footer {
                 <a href="https://appdoge.cn/" class="link-item" target="_blank"><span class="link-title">appdoge</span></a>
                 <a href="http://hellohti.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">hellohti软件站</span></a>
                 <a href="https://xiaoji.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">小鸡软件站</span></a>
-                
                 <a href="https://ipa.gistwillan.top/" class="link-item" target="_blank"><span class="link-title">IPA资源归档</span></a>
                 <a href="https://dekewww.mysxl.cn/" class="link-item" target="_blank"><span class="link-title">dekewww的软件站</span></a>
                 <a href="https://ioshero.top/" class="link-item" target="_blank"><span class="link-title">ioshero</span></a>
@@ -352,54 +411,18 @@ footer {
         <div class="card-title">实用网站推荐</div>
         <p class="card-description">精选实用网站，涵盖天气、娱乐、论坛、工具等多种类型。</p>
         <div class="link-grid">
-            <a href="http://old-ai.xo.je/" class="link-item" target="_blank">
-                <span class="link-title">老设备AI</span>
-                <span class="link-note">免费老设备AI</span>
-            </a>
-            <a href="https://xgwlcm.github.io/" class="link-item" target="_blank">
-                <span class="link-title">轩哥公益小网站</span>
-                <span class="link-note">在线工具箱</span>
-            </a>
-            <a href="https://tianqi.com/" class="link-item" target="_blank">
-                <span class="link-title">天气查询</span>
-                <span class="link-note">实时天气信息</span>
-            </a>
-            <a href="http://7891vip.top/bilibili.php" class="link-item" target="_blank">
-                <span class="link-title">oldbili网页版</span>
-                <span class="link-note">滑到最下方播放视频</span>
-            </a>
-            <a href="https://diantaiwang.com/" class="link-item" target="_blank">
-                <span class="link-title">在线收听观看</span>
-                <span class="link-note">电台、电视直播</span>
-            </a>
-            <a href="https://klpbbs.com/" class="link-item" target="_blank">
-                <span class="link-title">苦力怕论坛</span>
-                <span class="link-note">Minecraft玩家社区</span>
-            </a>
-            <a href="https://ioshero.top/shortcuts/minesweeper/" class="link-item" target="_blank">
-                <span class="link-title">在线扫雷</span>
-                <span class="link-note">经典游戏在线玩</span>
-            </a>
-            <a href="https://up.woozooo.com/" class="link-item" target="_blank">
-                <span class="link-title">蓝奏云</span>
-                <span class="link-note">高速文件分享</span>
-            </a>
-            <a href="https://3g.gs/index.html" class="link-item" target="_blank">
-                <span class="link-title">iOSIPA聊天</span>
-                <span class="link-note">iOS用户交流社区</span>
-            </a>
-            <a href="https://kill.mhfs.eu.org/" class="link-item" target="_blank">
-                <span class="link-title">i4应用搜索</span>
-                <span class="link-note">应用搜索工具</span>
-            </a>
-            <a href="https://kill.mhfs.eu.org/iosipa" class="link-item" target="_blank">
-                <span class="link-title">iBot</span>
-                <span class="link-note">iOS助手工具</span>
-            </a>
-            <a href="https://cloud.iosipa.org/" class="link-item" target="_blank">
-                <span class="link-title">iosipa互传</span>
-                <span class="link-note">文件互传中心</span>
-            </a>
+            <a href="http://old-ai.xo.je/" class="link-item" target="_blank"><span class="link-title">老设备AI</span><span class="link-note">免费老设备AI</span></a>
+            <a href="https://xgwlcm.github.io/" class="link-item" target="_blank"><span class="link-title">轩哥公益小网站</span><span class="link-note">在线工具箱</span></a>
+            <a href="https://tianqi.com/" class="link-item" target="_blank"><span class="link-title">天气查询</span><span class="link-note">实时天气信息</span></a>
+            <a href="http://7891vip.top/bilibili.php" class="link-item" target="_blank"><span class="link-title">oldbili网页版</span><span class="link-note">滑到最下方播放视频</span></a>
+            <a href="https://diantaiwang.com/" class="link-item" target="_blank"><span class="link-title">在线收听观看</span><span class="link-note">电台、电视直播</span></a>
+            <a href="https://klpbbs.com/" class="link-item" target="_blank"><span class="link-title">苦力怕论坛</span><span class="link-note">Minecraft玩家社区</span></a>
+            <a href="https://ioshero.top/shortcuts/minesweeper/" class="link-item" target="_blank"><span class="link-title">在线扫雷</span><span class="link-note">经典游戏在线玩</span></a>
+            <a href="https://up.woozooo.com/" class="link-item" target="_blank"><span class="link-title">蓝奏云</span><span class="link-note">高速文件分享</span></a>
+            <a href="https://3g.gs/index.html" class="link-item" target="_blank"><span class="link-title">iOSIPA聊天</span><span class="link-note">iOS用户交流社区</span></a>
+            <a href="https://kill.mhfs.eu.org/" class="link-item" target="_blank"><span class="link-title">i4应用搜索</span><span class="link-note">应用搜索工具</span></a>
+            <a href="https://kill.mhfs.eu.org/iosipa" class="link-item" target="_blank"><span class="link-title">iBot</span><span class="link-note">iOS助手工具</span></a>
+            <a href="https://cloud.iosipa.org/" class="link-item" target="_blank"><span class="link-title">iosipa互传</span><span class="link-note">文件互传中心</span></a>
         </div>
     </section>
 
@@ -408,8 +431,8 @@ footer {
         <p class="card-description">
             <span class="link-title">1: apt.gs</span><br>
             <span class="link-title">2: apt.senpai114514.icu</span><br>
-           <span class="link-title">3: aptch.bbroot.com</span><br>
- <span class="link-title">4: apt.abcydia.com</span><br>
+            <span class="link-title">3: aptch.bbroot.com</span><br>
+            <span class="link-title">4: apt.abcydia.com</span><br>
             <span class="link-title">5: cydia.skyglow.es</span><br>
             <span class="link-title">6: apt.saurik.com</span>
         </p>
@@ -419,52 +442,78 @@ footer {
         <div class="card-title">爱思助手安装</div>
         <p class="card-description">不用越狱，下载更多正版软件，不需要签名，需电脑爱思或手机爱思盒子绕过弹窗，密码统一666</p>
         <div class="link-grid">
-            <a href="https://www.i4.cn/" class="link-item" target="_blank">
-                <span class="link-title">爱思助手官网</span>
-                <span class="link-note">安装必备</span>
-            </a>
-            <a href="https://wwbcb.lanzn.com/iYOnk3l3x6pc" class="link-item" target="_blank">
-                <span class="link-title">安卓爱思盒子</span>
-                <span class="link-note">安卓控制端</span>
-            </a>
-            <a href="https://wwpp.lanzn.com/iGjVG34wa5gb" class="link-item" target="_blank">
-                <span class="link-title">爱思助手普通版</span>
-                <span class="link-note">兼容老设备</span>
-            </a>
-            <a href="https://wwpp.lanzn.com/i8q1b36kyzhg" class="link-item" target="_blank">
-                <span class="link-title">爱思助手加强版</span>
-                <span class="link-note">支持历史应用</span>
-            </a>
-            <a href="https://wwpp.lanzn.com/iSqX036kz0ej" class="link-item" target="_blank">
-                <span class="link-title">爱思助手极速版</span>
-                <span class="link-note">支持5s及较新设备</span>
-            </a>
-            <a href="https://wwpp.lanzn.com/itvga36kz0mh" class="link-item" target="_blank">
-                <span class="link-title">爱思助手全能版</span>
-                <span class="link-note">支持高版本iOS</span>
-            </a>
+            <a href="https://www.i4.cn/" class="link-item" target="_blank"><span class="link-title">爱思助手官网</span><span class="link-note">安装必备</span></a>
+            <a href="https://wwbcb.lanzn.com/iYOnk3l3x6pc" class="link-item" target="_blank"><span class="link-title">安卓爱思盒子</span><span class="link-note">安卓控制端</span></a>
+            <a href="https://wwpp.lanzn.com/iGjVG34wa5gb" class="link-item" target="_blank"><span class="link-title">爱思助手普通版</span><span class="link-note">兼容老设备</span></a>
+            <a href="https://wwpp.lanzn.com/i8q1b36kyzhg" class="link-item" target="_blank"><span class="link-title">爱思助手加强版</span><span class="link-note">支持历史应用</span></a>
+            <a href="https://wwpp.lanzn.com/iSqX036kz0ej" class="link-item" target="_blank"><span class="link-title">爱思助手极速版</span><span class="link-note">支持5s及较新设备</span></a>
+            <a href="https://wwpp.lanzn.com/itvga36kz0mh" class="link-item" target="_blank"><span class="link-title">爱思助手全能版</span><span class="link-note">支持高版本iOS</span></a>
         </div>
     </section>
 
     <footer>
         <div class="copyright">© 2026 MaoIPA软件网 版权所有</div>
         <div style="margin-top:8px; font-size:0.8rem; opacity:0.7;">网站所有者:猫尾草</div>
-<div style="margin-top:8px; font-size:0.8rem; opacity:0.7;">合作:初眠</div>
-<div style="margin-top:8px; font-size:0.8rem; opacity:0.7;">反馈邮箱:3944404716@qq.com</div>
-<div style="margin-top:8px; font-size:0.8rem; opacity:0.7;">聊天群:649971885</div>
-
+        <div style="margin-top:8px; font-size:0.8rem; opacity:0.7;">合作:初眠</div>
+        <div style="margin-top:8px; font-size:0.8rem; opacity:0.7;">反馈邮箱:3944404716@qq.com</div>
+        <div style="margin-top:8px; font-size:0.8rem; opacity:0.7;">聊天群:649971885</div>
+<div style="margin-top:8px; font-size:0.8rem; opacity:0.7;">小音乐🎵
+</div>
+</a>
+<audio controls src="https://mvwebfs.kugou.com/202605301033/160b5a12a6355f7ed73524dc88fd4b78/KGTX/CLTX002/e3fd5fbdb7d9d28068ee94dc9e1c4d69.mp4"></audio>
     </footer>
 </div>
 
 <script>
-function toggleTg() {
-    var c = document.getElementById("tglContent");
-    if (c.style.display === "block") {
-        c.style.display = "none";
-    } else {
-        c.style.display = "block";
+    // 折叠面板功能
+    function toggleTg() {
+        var content = document.getElementById("tglContent");
+        if (content.style.diplay === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
     }
-}
+
+    // 夜间模式切换 - 保证点击后整个网站变色
+    (function() {
+        const btn = document.getElementById('nightModeBtn');
+        // 读取本地存储
+        let isNight = localStorage.getItem('MaoIPA_NightMode') === 'true';
+        
+        // 应用主题函数（改变body类，从而改变所有颜色）
+        function applyTheme(enableNight) {
+            if (enableNight) {
+                document.body.classList.add('night-mode');
+                btn.innerHTML = '日';   // 夜间模式显示太阳，点击切回白天
+                btn.title = '切换到明亮模式';
+                localStorage.setItem('MaoIPA_NightMode', 'true');
+            } else {
+                document.body.classList.remove('night-mode');
+                btn.innerHTML = '夜';   // 白天模式显示月亮，点击进入夜间
+                btn.title = '切换到夜间模式';
+                localStorage.setItem('MaoIPA_NightMode', 'false');
+            }
+        }
+        
+        // 初始设置
+        if (isNight) {
+            applyTheme(true);
+        } else {
+            applyTheme(false);
+        }
+        
+        // 绑定点击事件：一键切换全站颜色
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const currentlyNight = document.body.classList.contains('night-mode');
+            if (currentlyNight) {
+                applyTheme(false);
+            } else {
+                applyTheme(true);
+            }
+        });
+    })();
 </script>
 
 </body>
